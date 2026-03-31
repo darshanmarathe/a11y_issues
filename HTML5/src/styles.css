@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+body {
+  @apply bg-gray-900;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+#app {
+  @apply min-h-screen;
+}
+
+/* App Container */
+.app-container {
+  @apply flex flex-col h-screen;
+}
+
+/* Header Styles */
+.app-header {
+  @apply bg-gray-800 border-b border-gray-700 px-6 py-4;
+}
+
+.app-title {
+  @apply text-2xl font-bold text-white mb-4;
+}
+
+/* Toolbar Styles */
+.toolbar {
+  @apply flex gap-3;
+}
+
+.toolbar-btn {
+  @apply px-4 py-2 rounded font-medium transition-colors flex items-center gap-2;
+}
+
+.toolbar-btn-primary {
+  @apply bg-blue-600 hover:bg-blue-500 text-white;
+}
+
+.toolbar-btn-secondary {
+  @apply bg-gray-600 hover:bg-gray-500 text-white;
+}
+
+/* Main Content */
+.app-main {
+  @apply flex-1 overflow-hidden p-6;
+}
+
+/* Kanban Board Container */
+.kanban-container {
+  @apply h-full bg-gray-800 rounded-lg overflow-hidden;
+}
+
+#kanban-board {
+  @apply h-full;
+}
+
+/* Kanban Column */
+.kanban-column {
+  @apply bg-gray-800 rounded-lg flex flex-col min-w-[280px] max-w-[280px];
+}
+
+.kanban-column-header {
+  @apply p-3 font-semibold text-white border-b border-gray-600 rounded-t-lg flex justify-between items-center;
+}
+
+.kanban-column-content {
+  @apply p-2 flex-1 overflow-y-auto min-h-[200px];
+}
+
+/* Kanban Card */
+.kanban-card {
+  @apply p-3 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition-colors mb-2 select-none;
+}
+
+/* Line clamp for description */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Line clamp for table cells */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Modal Styles */
+#todo-form-modal,
+#projects-master-modal,
+#project-form-container {
+  @apply hidden;
+}
+
+/* Form Input Styles */
+input[type="text"],
+input[type="url"],
+input[type="date"],
+textarea,
+select {
+  @apply bg-gray-700 border border-gray-600 text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+/* Table Styles */
+table {
+  @apply border-collapse;
+}
+
+th {
+  @apply bg-gray-700 text-white p-3 text-left font-semibold;
+}
+
+td {
+  @apply p-3 text-white border-b border-gray-700;
+}
+
+tr:hover {
+  @apply bg-gray-700;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500;
+}
+
+/* Priority Badge Colors */
+.priority-urgent {
+  @apply bg-red-500;
+}
+
+.priority-high {
+  @apply bg-orange-500;
+}
+
+.priority-medium {
+  @apply bg-yellow-500;
+}
+
+.priority-low {
+  @apply bg-green-500;
+}
+
+/* Utility Classes */
+.hidden {
+  display: none !important;
+}
+
+.flex {
+  display: flex !important;
+}

@@ -1,0 +1,114 @@
+{
+  "todos": [
+    {
+      "id": "1",
+      "title": "Setup project repository",
+      "description": "Initialize Git repository and setup basic project structure with Vite and Tailwind CSS",
+      "completionDate": "2024-01-15T10:30:00.000Z",
+      "status": "Done",
+      "targetCompletionDate": "2024-01-15T00:00:00.000Z",
+      "isCompleted": true,
+      "link": "https://github.com/example/todo-app",
+      "projectId": "1",
+      "priority": "High",
+      "user": "John Doe",
+      "createdAt": "2024-01-10T08:00:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    },
+    {
+      "id": "2",
+      "title": "Design database schema",
+      "description": "Create ERD diagram and define relationships between todos, projects, and users",
+      "completionDate": null,
+      "status": "Wip",
+      "targetCompletionDate": "2024-01-20T00:00:00.000Z",
+      "isCompleted": false,
+      "link": "",
+      "projectId": "1",
+      "priority": "Urgent",
+      "user": "Jane Smith",
+      "createdAt": "2024-01-12T09:00:00.000Z",
+      "updatedAt": "2024-01-18T14:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "title": "Implement authentication",
+      "description": "Add user authentication with JWT tokens and session management",
+      "completionDate": null,
+      "status": "Backlog",
+      "targetCompletionDate": "2024-01-25T00:00:00.000Z",
+      "isCompleted": false,
+      "link": "",
+      "projectId": "2",
+      "priority": "High",
+      "user": "Bob Wilson",
+      "createdAt": "2024-01-14T11:00:00.000Z",
+      "updatedAt": "2024-01-14T11:00:00.000Z"
+    },
+    {
+      "id": "4",
+      "title": "Create API documentation",
+      "description": "Document all REST API endpoints using OpenAPI/Swagger specification",
+      "completionDate": null,
+      "status": "LinedUp",
+      "targetCompletionDate": "2024-01-22T00:00:00.000Z",
+      "isCompleted": false,
+      "link": "https://api.example.com/docs",
+      "projectId": "1",
+      "priority": "Medium",
+      "user": "Alice Brown",
+      "createdAt": "2024-01-15T13:00:00.000Z",
+      "updatedAt": "2024-01-16T09:00:00.000Z"
+    },
+    {
+      "id": "5",
+      "title": "Fix navigation bug",
+      "description": "Navigation menu not collapsing on mobile devices when clicking outside",
+      "completionDate": null,
+      "status": "Stuck",
+      "targetCompletionDate": "2024-01-18T00:00:00.000Z",
+      "isCompleted": false,
+      "link": "https://github.com/example/todo-app/issues/42",
+      "projectId": "3",
+      "priority": "Urgent",
+      "user": "John Doe",
+      "createdAt": "2024-01-16T10:00:00.000Z",
+      "updatedAt": "2024-01-17T16:00:00.000Z"
+    },
+    {
+      "id": "6",
+      "title": "Write unit tests",
+      "description": "Add comprehensive unit tests for all service layer components",
+      "completionDate": null,
+      "status": "Backlog",
+      "targetCompletionDate": "2024-01-30T00:00:00.000Z",
+      "isCompleted": false,
+      "link": "",
+      "projectId": "2",
+      "priority": "Low",
+      "user": "Jane Smith",
+      "createdAt": "2024-01-17T08:00:00.000Z",
+      "updatedAt": "2024-01-17T08:00:00.000Z"
+    }
+  ],
+  "projects": [
+    {
+      "id": "1",
+      "name": "Todo App Development",
+      "description": "Main project for developing the Todo Kanban Board application with all core features",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "name": "Infrastructure Setup",
+      "description": "Setting up CI/CD pipelines, cloud infrastructure, and deployment automation",
+      "createdAt": "2024-01-05T00:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "name": "Bug Fixes",
+      "description": "Ongoing maintenance and bug fixes for the production application",
+      "createdAt": "2024-01-10T00:00:00.000Z"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load Test</title>
+    <style>
+        body { background: #1f2937; color: white; font-family: monospace; padding: 20px; }
+        .log { background: #374151; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .pending { color: #fbbf24; }
+    </style>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- jQXWidgets CSS -->
+    <link rel="stylesheet" href="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/styles/jqx.base.css" />
+    <link rel="stylesheet" href="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/styles/jqx.dark.css" />
+    
+    <!-- jQXWidgets Scripts -->
+    <script src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxcore.js"></script>
+    <script src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxkanban.js"></script>
+    <script src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxwindow.js"></script>
+    <script src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxbuttons.js"></script>
+    <script src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxinput.js"></script>
+    <script src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxtextarea.js"></script>
+    <script src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxdropdownlist.js"></script>
+    <script src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxdatetimeinput.js"></script>
+    <script src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxcalendar.js"></script>
+    <script src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxdata.js"></script>
+    <script src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxgrid.js"></script>
+</head>
+<body>
+    <h1>Library Load Test</h1>
+    <div id="logs"></div>
+    
+    <script>
+        const logs = document.getElementById('logs');
+        
+        function log(message, type = '') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = message;
+            logs.appendChild(div);
+        }
+
+        log('Checking jQuery...', 'pending');
+        if (typeof window.$ !== 'undefined') {
+            log('✓ jQuery loaded! Version: ' + $.fn.jquery, 'success');
+        } else {
+            log('✗ jQuery NOT loaded!', 'error');
+        }
+        
+        log('Checking jQXWidgets...', 'pending');
+        if (typeof window.$?.fn?.jqxKanban !== 'undefined') {
+            log('✓ jQXWidgets Kanban loaded!', 'success');
+        } else {
+            log('✗ jQXWidgets Kanban NOT loaded!', 'error');
+        }
+        
+        if (typeof window.$?.fn?.jqxWindow !== 'undefined') {
+            log('✓ jQXWidgets Window loaded!', 'success');
+        } else {
+            log('✗ jQXWidgets Window NOT loaded!', 'error');
+        }
+        
+        if (typeof window.$?.fn?.jqxDropDownList !== 'undefined') {
+            log('✓ jQXWidgets DropDownList loaded!', 'success');
+        } else {
+            log('✗ jQXWidgets DropDownList NOT loaded!', 'error');
+        }
+        
+        log('All checks completed!', 'success');
+        
+        // Show all available jQuery plugins
+        log('Available jQuery plugins: ' + Object.keys($.fn || {}).join(', '), 'pending');
+    </script>
+</body>
+</html>

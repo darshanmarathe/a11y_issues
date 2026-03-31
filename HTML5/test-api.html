@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+    <style>
+        body { background: #1f2937; color: white; font-family: monospace; padding: 20px; }
+        .log { background: #374151; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <h1>API Connection Test</h1>
+    <div id="logs"></div>
+    
+    <script>
+        const logs = document.getElementById('logs');
+        
+        function log(message, type = '') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = message;
+            logs.appendChild(div);
+            console.log(message);
+        }
+
+        async function testAPI() {
+            log('Starting API tests...');
+            
+            // Test 1: Direct JSON Server
+            try {
+                log('Test 1: Direct connection to http://localhost:3001/todos');
+                const res1 = await fetch('http://localhost:3001/todos');
+                log(`Status: ${res1.status} ${res1.ok ? 'OK' : 'FAILED'}`, res1.ok ? 'success' : 'error');
+                const data1 = await res1.json();
+                log(`Direct: Got ${data1.length} todos`, 'success');
+            } catch (e) {
+                log(`Direct connection FAILED: ${e.message}`, 'error');
+            }
+            
+            // Test 2: Vite Proxy
+            try {
+                log('Test 2: Vite Proxy /api/todos');
+                const res2 = await fetch('/api/todos');
+                log(`Status: ${res2.status} ${res2.ok ? 'OK' : 'FAILED'}`, res2.ok ? 'success' : 'error');
+                const data2 = await res2.json();
+                log(`Proxy: Got ${data2.length} todos`, 'success');
+            } catch (e) {
+                log(`Proxy connection FAILED: ${e.message}`, 'error');
+            }
+            
+            // Test 3: Projects
+            try {
+                log('Test 3: Projects API');
+                const res3 = await fetch('/api/projects');
+                const data3 = await res3.json();
+                log(`Projects: Got ${data3.length} projects`, 'success');
+            } catch (e) {
+                log(`Projects FAILED: ${e.message}`, 'error');
+            }
+            
+            log('All tests completed!');
+        }
+        
+        testAPI();
+    </script>
+</body>
+</html>

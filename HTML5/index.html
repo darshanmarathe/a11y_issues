@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Todo Kanban Board</title>
+    </head>
+    <body class="bg-gray-900">
+        <div id="app" class="app-container">
+            <!-- Header -->
+            <header class="app-header">
+                <h1 class="app-title">📋 Todo Kanban Board</h1>
+
+                <!-- Toolbar -->
+                <div class="toolbar">
+                    <button
+                        id="btn-new-todo"
+                        class="toolbar-btn toolbar-btn-primary"
+                    >
+                        <span>➕</span> New Todo
+                    </button>
+                    <button
+                        id="btn-projects"
+                        class="toolbar-btn toolbar-btn-secondary"
+                    >
+                        <span>📁</span> Projects
+                    </button>
+                    <button
+                        id="btn-refresh"
+                        class="toolbar-btn toolbar-btn-secondary"
+                    >
+                        <span>🔄</span> Refresh
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="app-main">
+                <div class="kanban-container">
+                    <div id="kanban-board"></div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Todo Form Modal -->
+        <div id="todo-form-modal" class="hidden"></div>
+
+        <!-- Main Application Module -->
+        <script type="module" src="/src/main.js"></script>
+    </body>
+</html>
