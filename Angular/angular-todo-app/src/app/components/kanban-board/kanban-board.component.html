@@ -1,0 +1,101 @@
+<div class="kanban-container">
+  <div class="kanban-header">
+    <h2 class="page-title">Todo Kanban Board</h2>
+    <button class="btn btn-primary" (click)="openAddModal()">
+      <i class="bi bi-plus-lg"></i> Add Todo
+    </button>
+  </div>
+
+  <div class="kanban-board">
+    @for (status of statuses; track status) {
+      <div class="kanban-column" 
+           (dragover)="onDragOver($event)" 
+           (drop)="onDrop($event, status)">
+        <div class="kanban-column-header" [style.border-top-color]="statusConfig[status].color">
+          <h3 class="kanban-column-title">
+            <span class="status-dot" [style.background-color]="statusConfig[status].color"></span>
+            {{ statusConfig[status].label }}
+          </h3>
+          <span class="badge">{{ getTodosByStatus(status).length }}</span>
+        </div>
+
+        <div class="kanban-cards">
+          @for (todo of getTodosByStatus(status); track todo.id) {
+            <div class="kanban-card" 
+                 draggable="true"
+                 (dragstart)="onDragStart(todo)"
+                 [class.completed]="todo.isCompleted">
+              <div class="card-header">
+                <div class="card-title-section">
+                  <h4 class="card-title">{{ todo.title }}</h4>
+                  <span class="priority-badge" 
+                        [style.background-color]="priorityColors[todo.priority]">
+                    {{ todo.priority }}
+                  </span>
+                </div>
+                <div class="card-actions">
+                  <button class="btn-icon" (click)="openEditModal(todo)" title="Edit">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn-icon btn-icon-danger" (click)="deleteTodo(todo)" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <p class="card-description">{{ todo.description }}</p>
+
+              @if (todo.projects.length > 0) {
+                <div class="card-projects">
+                  <i class="bi bi-folder"></i>
+                  <span>{{ getProjectNames(todo.projects) }}</span>
+                </div>
+              }
+
+              <div class="card-footer">
+                <div class="card-user">
+                  <i class="bi bi-person-circle"></i>
+                  <span>{{ getUserName(todo.userId) }}</span>
+                </div>
+                <div class="card-completion">
+                  <label class="checkbox-label">
+                    <input type="checkbox" 
+                           [checked]="todo.isCompleted" 
+                           (change)="toggleComplete(todo)">
+                    <span class="checkmark"></span>
+                    Done
+                  </label>
+                </div>
+              </div>
+
+              @if (todo.targetCompletionDate) {
+                <div class="card-dates">
+                  <small>
+                    <i class="bi bi-calendar-event"></i>
+                    Due: {{ todo.targetCompletionDate | date:'MMM d, y' }}
+                  </small>
+                </div>
+              }
+
+              @if (todo.link) {
+                <div class="card-link">
+                  <a [href]="todo.link" target="_blank" rel="noopener">
+                    <i class="bi bi-link-45deg"></i> Link
+                  </a>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (showAddModal()) {
+    <app-todo-form-modal
+      [todo]="editingTodo()"
+      (save)="saveTodo($event)"
+      (cancel)="closeAddModal()">
+    </app-todo-form-modal>
+  }
+</div>

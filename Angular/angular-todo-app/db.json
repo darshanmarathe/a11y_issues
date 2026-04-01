@@ -1,0 +1,127 @@
+{
+  "todos": [
+    {
+      "id": "1",
+      "title": "Setup project structure",
+      "description": "Create Angular project with proper folder structure",
+      "completionDate": "2024-01-15T00:00:00.000Z",
+      "status": "Done",
+      "targetCompletionDate": "2024-01-15T00:00:00.000Z",
+      "isCompleted": true,
+      "projects": [
+        "1"
+      ],
+      "priority": "High",
+      "userId": "1",
+      "createdAt": "2024-01-10T00:00:00.000Z",
+      "updatedAt": "2024-01-15T00:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "title": "Design database schema",
+      "description": "Create ERD for todos, projects, and users",
+      "status": "Wip",
+      "isCompleted": false,
+      "projects": [
+        "1"
+      ],
+      "priority": "Urgent",
+      "userId": "1",
+      "targetCompletionDate": "2024-01-20T00:00:00.000Z",
+      "createdAt": "2024-01-12T00:00:00.000Z",
+      "updatedAt": "2024-01-18T00:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "title": "Implement authentication",
+      "description": "Add login/logout functionality",
+      "status": "Backlog",
+      "isCompleted": false,
+      "projects": [
+        "2"
+      ],
+      "priority": "Medium",
+      "userId": "2",
+      "targetCompletionDate": "2024-02-01T00:00:00.000Z",
+      "createdAt": "2024-01-15T00:00:00.000Z",
+      "updatedAt": "2024-01-15T00:00:00.000Z"
+    },
+    {
+      "id": "4",
+      "title": "Create API endpoints",
+      "description": "Build REST API for CRUD operations",
+      "status": "Linedup",
+      "isCompleted": false,
+      "projects": [
+        "1",
+        "2"
+      ],
+      "priority": "High",
+      "userId": "1",
+      "targetCompletionDate": "2024-01-25T00:00:00.000Z",
+      "createdAt": "2024-01-16T00:00:00.000Z",
+      "updatedAt": "2024-01-16T00:00:00.000Z"
+    },
+    {
+      "id": "5",
+      "title": "Fix navigation bug",
+      "description": "Navigation not working on mobile devices",
+      "status": "Stuck",
+      "isCompleted": false,
+      "projects": [
+        "3"
+      ],
+      "priority": "Urgent",
+      "userId": "2",
+      "targetCompletionDate": "2024-01-18T00:00:00.000Z",
+      "createdAt": "2024-01-17T00:00:00.000Z",
+      "updatedAt": "2024-01-18T00:00:00.000Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "avatar": "https://i.pravatar.cc/150?u=1"
+    },
+    {
+      "id": "2",
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "avatar": "https://i.pravatar.cc/150?u=2"
+    }
+  ],
+  "projects": [
+    {
+      "id": "1",
+      "name": "Angular Todo App",
+      "description": "Main todo application project"
+    },
+    {
+      "id": "2",
+      "name": "Authentication Module",
+      "description": "User authentication and authorization"
+    },
+    {
+      "id": "3",
+      "name": "Mobile Responsiveness",
+      "description": "Make the app work on mobile devices"
+    },
+    {
+      "name": "Mobile App",
+      "description": "ssms",
+      "createdAt": "2026-04-01T07:40:55.293Z",
+      "updatedAt": "2026-04-01T07:40:55.293Z",
+      "id": "HHklcw5rZAE"
+    },
+    {
+      "name": "Background Jobs",
+      "description": "Jobs",
+      "createdAt": "2026-04-01T07:41:26.919Z",
+      "updatedAt": "2026-04-01T07:41:26.919Z",
+      "id": "U557YSXD1cE"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

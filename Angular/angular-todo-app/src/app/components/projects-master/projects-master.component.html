@@ -1,0 +1,94 @@
+<div class="projects-container">
+  <div class="projects-header">
+    <h2 class="page-title">Projects Master</h2>
+    <button class="btn btn-primary" (click)="openAddModal()">
+      <i class="bi bi-plus-lg"></i> Add Project
+    </button>
+  </div>
+
+  <div class="projects-grid">
+    @for (project of projects(); track project.id) {
+      <div class="project-card">
+        <div class="project-card-header">
+          <h3 class="project-name">{{ project.name }}</h3>
+          <div class="project-actions">
+            <button class="btn-icon" (click)="openEditModal(project)" title="Edit">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="btn-icon btn-icon-danger" (click)="deleteProject(project)" title="Delete">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        @if (project.description) {
+          <p class="project-description">{{ project.description }}</p>
+        }
+
+        <div class="project-footer">
+          <div class="project-todo-count">
+            <i class="bi bi-list-task"></i>
+            <span>{{ getTodoCount(project.id) }} todo(s)</span>
+          </div>
+          <small class="project-created">
+            <i class="bi bi-calendar"></i>
+            Created: {{ project.createdAt | date:'MMM d, y' }}
+          </small>
+        </div>
+      </div>
+    }
+
+    @if (projects().length === 0) {
+      <div class="empty-state">
+        <i class="bi bi-folder-x"></i>
+        <h3>No Projects Yet</h3>
+        <p>Create your first project to get started</p>
+        <button class="btn btn-primary" (click)="openAddModal()">
+          <i class="bi bi-plus-lg"></i> Add Project
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (showAddModal()) {
+    <div class="modal-backdrop" (click)="closeAddModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title">{{ editingProject() ? 'Edit Project' : 'Add New Project' }}</h3>
+          <button class="btn-close" (click)="closeAddModal()"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="name">Project Name <span class="required">*</span></label>
+            <input 
+              type="text" 
+              id="name"
+              class="form-control" 
+              [(ngModel)]="formData().name"
+              placeholder="Enter project name"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea 
+              id="description"
+              class="form-control" 
+              [(ngModel)]="formData().description"
+              placeholder="Enter project description"
+              rows="3">
+            </textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeAddModal()">Cancel</button>
+          <button class="btn btn-primary" (click)="onSave()">
+            {{ editingProject() ? 'Update' : 'Create' }} Project
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
