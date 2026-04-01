@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Todo App</title>
+    
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AdminLTE -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0-beta2/dist/css/adminlte.min.css">
+    <!-- jqxwidgets -->
+    <link rel="stylesheet" href="https://jqwidgets.com/public/jqwidgets/styles/jqx.base.css" />
+    <link rel="stylesheet" href="https://jqwidgets.com/public/jqwidgets/styles/jqx.light.css" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <style>
+        .kanban-board {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            overflow-x: auto;
+            background: #f4f6f9;
+            min-height: 500px;
+        }
+        
+        .kanban-column {
+            min-width: 300px;
+            background: #e9ecef;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        
+        .kanban-column-header {
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .kanban-column-header.backlog { background: #6c757d; color: white; }
+        .kanban-column-header.linedup { background: #17a2b8; color: white; }
+        .kanban-column-header.wip { background: #ffc107; color: black; }
+        .kanban-column-header.done { background: #28a745; color: white; }
+        .kanban-column-header.stuck { background: #dc3545; color: white; }
+        
+        .kanban-card {
+            background: white;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .kanban-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+        }
+        
+        .kanban-card-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .kanban-card-description {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .kanban-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+        }
+        
+        .priority-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        .priority-urgent { background: #dc3545; color: white; }
+        .priority-high { background: #fd7e14; color: white; }
+        .priority-medium { background: #ffc107; color: black; }
+        .priority-low { background: #28a745; color: white; }
+        
+        .project-select {
+            min-width: 200px;
+        }
+        
+        #todoModal .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .status-backlog { background: #6c757d; color: white; }
+        .status-linedup { background: #17a2b8; color: white; }
+        .status-wip { background: #ffc107; color: black; }
+        .status-done { background: #28a745; color: white; }
+        .status-stuck { background: #dc3545; color: white; }
+        
+        .sidebar-brand {
+            padding: 0.8125rem 1rem;
+            font-size: 1.25rem;
+            display: block;
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        .nav-link {
+            color: #C2C7D0;
+        }
+        
+        .nav-link:hover {
+            color: #fff;
+        }
+        
+        .nav-link.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light border-bottom">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="/" class="nav-link">Home</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <span class="navbar-text text-muted" id="currentDateTime"></span>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a href="/" class="brand-link bg-primary">
+                <i class="fas fa-check-circle ml-3"></i>
+                <span class="brand-text font-weight-light ml-2">Todo App</span>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <li class="nav-header">MAIN</li>
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">
+                                <i class="nav-icon fas fa-th-large"></i>
+                                <p>Kanban Board</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Todos" class="nav-link">
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>All Todos</p>
+                            </a>
+                        </li>
+                        <li class="nav-header">MANAGEMENT</li>
+                        <li class="nav-item">
+                            <a href="/Projects" class="nav-link">
+                                <i class="nav-icon fas fa-folder"></i>
+                                <p>Projects</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+            <!-- Main content -->
+            <div class="content">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+
+        <footer class="main-footer">
+            <div class="float-right d-none d-sm-inline">
+                <b>Version</b> 1.0.0
+            </div>
+            <strong>Todo App</strong> - Built with ASP.NET Core & AdminLTE
+        </footer>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE -->
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0-beta2/dist/js/adminlte.min.js"></script>
+    <!-- jqxwidgets -->
+    <script src="https://jqwidgets.com/public/jqwidgets/jqxcore.js"></script>
+    <script src="https://jqwidgets.com/public/jqwidgets/jqxdata.js"></script>
+    <script src="https://jqwidgets.com/public/jqwidgets/jqxbuttons.js"></script>
+    <script src="https://jqwidgets.com/public/jqwidgets/jqxscrollbar.js"></script>
+    <script src="https://jqwidgets.com/public/jqwidgets/jqxlistbox.js"></script>
+    <script src="https://jqwidgets.com/public/jqwidgets/jqxcombobox.js"></script>
+    <script src="https://jqwidgets.com/public/jqwidgets/jqxdatetimeinput.js"></script>
+    
+    <script>
+        // Update date time
+        function updateDateTime() {
+            const now = new Date();
+            $('#currentDateTime').text(now.toLocaleString());
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
+    
+    @await RenderSectionAsync("Scripts", false)
+</body>
+</html>

@@ -1,0 +1,308 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Kanban Board";
+}
+
+<div class="content-header mt-2">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0"><i class="fas fa-columns"></i> Kanban Board</h1>
+            </div>
+            <div class="col-sm-6">
+                <button class="btn btn-primary float-right" onclick="openAddModal()">
+                    <i class="fas fa-plus"></i> Add Todo
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="kanban-board" id="kanbanBoard">
+            <div class="kanban-column" data-status="Backlog">
+                <div class="kanban-column-header backlog"><i class="fas fa-inbox"></i> Backlog</div>
+                <div class="kanban-cards" id="cards-backlog"></div>
+            </div>
+            <div class="kanban-column" data-status="Linedup">
+                <div class="kanban-column-header linedup"><i class="fas fa-clone"></i> Lined Up</div>
+                <div class="kanban-cards" id="cards-linedup"></div>
+            </div>
+            <div class="kanban-column" data-status="Wip">
+                <div class="kanban-column-header wip"><i class="fas fa-spinner"></i> In Progress</div>
+                <div class="kanban-cards" id="cards-wip"></div>
+            </div>
+            <div class="kanban-column" data-status="Done">
+                <div class="kanban-column-header done"><i class="fas fa-check-circle"></i> Done</div>
+                <div class="kanban-cards" id="cards-done"></div>
+            </div>
+            <div class="kanban-column" data-status="Stuck">
+                <div class="kanban-column-header stuck"><i class="fas fa-exclamation-triangle"></i> Stuck</div>
+                <div class="kanban-cards" id="cards-stuck"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Todo Modal -->
+<div class="modal fade" id="todoModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h4 class="modal-title" id="modalTitle"><i class="fas fa-plus-circle"></i> Add Todo</h4>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="todoForm">
+                    <input type="hidden" id="todoId" />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="title"><i class="fas fa-heading"></i> Title *</label>
+                                <input type="text" class="form-control" id="title" required placeholder="Enter todo title" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="projectSelect"><i class="fas fa-folder"></i> Project</label>
+                                <select class="form-control" id="projectSelect">
+                                    <option value="">-- Select Project --</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description"><i class="fas fa-align-left"></i> Description</label>
+                        <textarea class="form-control" id="description" rows="3" placeholder="Enter description"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="statusSelect"><i class="fas fa-flag"></i> Status</label>
+                                <select class="form-control" id="statusSelect">
+                                    <option value="Backlog">Backlog</option>
+                                    <option value="Linedup">Lined Up</option>
+                                    <option value="Wip">In Progress</option>
+                                    <option value="Done">Done</option>
+                                    <option value="Stuck">Stuck</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="prioritySelect"><i class="fas fa-exclamation"></i> Priority</label>
+                                <select class="form-control" id="prioritySelect">
+                                    <option value="Urgent">Urgent</option>
+                                    <option value="High">High</option>
+                                    <option value="Medium" selected>Medium</option>
+                                    <option value="Low">Low</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="targetCompletionDate"><i class="fas fa-calendar"></i> Target Completion Date</label>
+                                <input type="date" class="form-control" id="targetCompletionDate" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="userInput"><i class="fas fa-user"></i> User</label>
+                                <input type="text" class="form-control" id="userInput" placeholder="Assigned user" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="linkInput"><i class="fas fa-link"></i> Link</label>
+                        <input type="url" class="form-control" id="linkInput" placeholder="https://..." />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="deleteBtn" style="display:none;" onclick="deleteTodo()">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="saveTodo()">
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let todos = [];
+    let projects = [];
+    let todoModal;
+
+    $(document).ready(function() {
+        // Initialize Bootstrap 5 modal
+        todoModal = new bootstrap.Modal(document.getElementById('todoModal'));
+        
+        loadProjects();
+        loadTodos();
+        
+        // Initialize jqxComboBox for projects
+        $('#projectSelect').jqxComboBox({
+            width: '100%',
+            height: 38,
+            source: [],
+            displayMember: 'name',
+            valueMember: 'id',
+            placeHolder: '-- Select Project --'
+        });
+    });
+
+    function loadProjects() {
+        $.get('/api/projects', function(data) {
+            projects = data;
+            $('#projectSelect').jqxComboBox('source', data);
+        });
+    }
+
+    function loadTodos() {
+        $.get('/api/todos', function(data) {
+            todos = data;
+            renderKanbanBoard();
+        });
+    }
+
+    function renderKanbanBoard() {
+        $('#cards-backlog, #cards-linedup, #cards-wip, #cards-done, #cards-stuck').empty();
+        
+        todos.forEach(todo => {
+            const card = createTodoCard(todo);
+            const columnId = `cards-${todo.status.toLowerCase()}`;
+            $(`#${columnId}`).append(card);
+        });
+        
+        // Add click handlers
+        $('.kanban-card').on('click', function() {
+            const todoId = $(this).data('id');
+            openEditModal(todoId);
+        });
+    }
+
+    function createTodoCard(todo) {
+        const projectInfo = todo.project ? `<span class="project-info"><i class="fas fa-folder"></i> ${escapeHtml(todo.project.name)}</span>` : '';
+        const userInfo = todo.user ? `<span><i class="fas fa-user"></i> ${escapeHtml(todo.user)}</span>` : '';
+        const linkInfo = todo.link ? `<a href="${escapeHtml(todo.link)}" target="_blank" class="ml-2 text-muted"><i class="fas fa-external-link-alt"></i></a>` : '';
+        
+        return `
+            <div class="kanban-card" data-id="${todo.id}">
+                <div class="kanban-card-title">${escapeHtml(todo.title)}</div>
+                <div class="kanban-card-description">${escapeHtml(todo.description || '')}</div>
+                <div class="kanban-card-meta">
+                    <span class="priority-badge priority-${todo.priority.toLowerCase()}">${todo.priority}</span>
+                    <div class="d-flex align-items-center">
+                        ${projectInfo}
+                        ${userInfo}
+                        ${linkInfo}
+                    </div>
+                </div>
+                ${todo.targetCompletionDate ? `<div class="mt-2" style="font-size:0.7rem;color:#666;"><i class="fas fa-calendar-alt"></i> ${formatDate(todo.targetCompletionDate)}</div>` : ''}
+            </div>
+        `;
+    }
+
+    function openAddModal() {
+        $('#modalTitle').html('<i class="fas fa-plus-circle"></i> Add Todo');
+        $('#todoForm')[0].reset();
+        $('#todoId').val('');
+        $('#deleteBtn').hide();
+        todoModal.show();
+    }
+
+    function openEditModal(todoId) {
+        const todo = todos.find(t => t.id === todoId);
+        if (!todo) return;
+        
+        $('#modalTitle').html('<i class="fas fa-edit"></i> Edit Todo');
+        $('#todoId').val(todo.id);
+        $('#title').val(todo.title);
+        $('#description').val(todo.description || '');
+        $('#statusSelect').val(todo.status);
+        $('#prioritySelect').val(todo.priority);
+        $('#targetCompletionDate').val(todo.targetCompletionDate ? todo.targetCompletionDate.split('T')[0] : '');
+        $('#userInput').val(todo.user || '');
+        $('#linkInput').val(todo.link || '');
+        $('#projectSelect').jqxComboBox('val', todo.projectId);
+        $('#deleteBtn').show();
+        todoModal.show();
+    }
+
+    function saveTodo() {
+        const todoId = $('#todoId').val();
+        const todoData = {
+            title: $('#title').val(),
+            description: $('#description').val(),
+            status: $('#statusSelect').val(),
+            priority: $('#prioritySelect').val(),
+            targetCompletionDate: $('#targetCompletionDate').val() || null,
+            user: $('#userInput').val(),
+            link: $('#linkInput').val(),
+            projectId: $('#projectSelect').jqxComboBox('val')
+        };
+        
+        if (!todoData.title) {
+            alert('Title is required');
+            return;
+        }
+        
+        const url = todoId ? `/api/todos/${todoId}` : '/api/todos';
+        const method = todoId ? 'PUT' : 'POST';
+        
+        $.ajax({
+            url: url,
+            method: method,
+            contentType: 'application/json',
+            data: JSON.stringify(todoData),
+            success: function() {
+                todoModal.hide();
+                loadTodos();
+            },
+            error: function(xhr) {
+                alert('Error saving todo: ' + xhr.responseText);
+            }
+        });
+    }
+
+    function deleteTodo() {
+        const todoId = $('#todoId').val();
+        if (!todoId) return;
+        
+        if (confirm('Are you sure you want to delete this todo?')) {
+            $.ajax({
+                url: `/api/todos/${todoId}`,
+                method: 'DELETE',
+                success: function() {
+                    todoModal.hide();
+                    loadTodos();
+                },
+                error: function(xhr) {
+                    alert('Error deleting todo: ' + xhr.responseText);
+                }
+            });
+        }
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString();
+    }
+</script>
+}

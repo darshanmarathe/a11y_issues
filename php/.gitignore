@@ -1,0 +1,92 @@
+# Dependencies
+/vendor/
+/composer/
+
+# Database files
+/data/*.db
+/data/*.db-journal
+/data/*.sqlite
+/data/*.sqlite3
+
+# Logs
+/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+/pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Directory for instrumented libs
+/coverage/
+
+# Coverage directory used by tools
+/cov/
+
+# NPM
+node_modules/
+npm-debug.json
+
+# Yarn
+.yarn-integrity
+.pnp.*
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# Cache files
+.cache/
+.parcel-cache/
+
+# Build outputs
+/dist/
+/build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+/tmp/
+temp/
+
+# PHP specific
+*.php~
+*.php.cache
+.phpunit.result.cache
+.php_cs.cache
+.php-cs-fixer.cache
+.php-cs-fixer.dist.php.cache
+
+# Composer
+composer.lock
+
+# AdminLTE/Assets (if downloaded locally)
+/assets/adminlte/
+/assets/bower_components/
+
+# jqxWidgets (if downloaded locally)
+/assets/jqwidgets/
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Uploads (if any)
+/uploads/
+/downloads/
