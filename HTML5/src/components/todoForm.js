@@ -1,7 +1,7 @@
 import { Status, Priority, createTodo } from '../models/todo.js';
 
 /**
- * Todo Form Component - Custom modal implementation
+ * Todo Form Component - Custom modal with intentional a11y issues
  */
 export class TodoForm {
   constructor(containerId, options = {}) {
@@ -15,58 +15,43 @@ export class TodoForm {
     this.isOpen = false;
   }
 
-  /**
-   * Set projects for dropdown
-   */
   setProjects(projects) {
     this.projects = projects;
   }
 
-  /**
-   * Open form for new todo
-   */
   openForNew() {
     this.currentTodo = null;
     this.render();
     this.show();
   }
 
-  /**
-   * Open form for editing existing todo
-   */
   openForEdit(todo) {
     this.currentTodo = { ...todo };
     this.render();
     this.show();
   }
 
-  /**
-   * Show the modal
-   */
   show() {
     const modal = document.querySelector(this.containerId);
     if (modal) {
       modal.classList.remove('hidden');
       modal.classList.add('flex');
       this.isOpen = true;
+      // ISSUE: No focus trap
+      // ISSUE: No focus management when modal opens
     }
   }
 
-  /**
-   * Hide the modal
-   */
   hide() {
     const modal = document.querySelector(this.containerId);
     if (modal) {
       modal.classList.add('hidden');
       modal.classList.remove('flex');
       this.isOpen = false;
+      // ISSUE: Focus not returned to trigger element
     }
   }
 
-  /**
-   * Get form data
-   */
   getFormData() {
     const title = document.getElementById('todo-title')?.value || '';
     const description = document.getElementById('todo-description')?.value || '';
@@ -98,9 +83,6 @@ export class TodoForm {
     return todo;
   }
 
-  /**
-   * Render the form
-   */
   render() {
     const isEdit = !!this.currentTodo;
     const modal = document.querySelector(this.containerId);
@@ -119,6 +101,11 @@ export class TodoForm {
       .map(p => `<option value="${p}" ${this.currentTodo?.priority === p ? 'selected' : ''}>${p}</option>`)
       .join('');
     
+    // ISSUE: Modal without role="dialog" and aria-modal
+    // ISSUE: No aria-labelledby pointing to title
+    // ISSUE: Labels not properly associated with inputs (using visual labels only)
+    // ISSUE: Error messages not associated with inputs via aria-describedby
+    // ISSUE: No aria-required on required fields
     modal.innerHTML = `
       <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" onclick="if(event.target === this) window.todoForm.hide()">
         <div class="bg-gray-800 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -126,7 +113,7 @@ export class TodoForm {
             <h3 class="text-xl font-bold text-white mb-4">${isEdit ? 'Edit Todo' : 'New Todo'}</h3>
             
             <div class="space-y-4">
-              <!-- Title -->
+              <!-- Title - ISSUE: label without for attribute -->
               <div>
                 <label class="block text-sm font-medium text-gray-300 mb-1">Title *</label>
                 <input id="todo-title" type="text" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500" 
@@ -186,7 +173,7 @@ export class TodoForm {
                 </div>
               </div>
 
-              <!-- Completion Date (Read-only, shown only for completed items) -->
+              <!-- Completion Date -->
               ${this.currentTodo?.completionDate ? `
                 <div>
                   <label class="block text-sm font-medium text-gray-300 mb-1">Completed On</label>
@@ -207,7 +194,6 @@ export class TodoForm {
       </div>
     `;
 
-    // Button handlers
     document.getElementById('btn-cancel')?.addEventListener('click', () => {
       this.hide();
       this.onCancel();
@@ -216,6 +202,7 @@ export class TodoForm {
     document.getElementById('btn-save')?.addEventListener('click', () => {
       const todo = this.getFormData();
       
+      // ISSUE: Error shown in alert instead of inline, not announced to screen readers
       if (!todo.title.trim()) {
         alert('Title is required');
         return;
@@ -236,5 +223,4 @@ export class TodoForm {
   }
 }
 
-// Expose globally for modal click handler
 window.todoForm = null;

@@ -4,45 +4,42 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Todo Kanban Board</title>
+        <!-- Intentionally missing skip link -->
+        <!-- Intentionally missing meta description -->
     </head>
     <body class="bg-gray-900">
+        <!-- Intentionally missing main landmark -->
         <div id="app" class="app-container">
-            <!-- Header -->
+            <!-- Header without role -->
             <header class="app-header">
-                <h1 class="app-title">📋 Todo Kanban Board</h1>
+                <!-- Using div instead of h1 for title -->
+                <div class="app-title">📋 Todo Kanban Board</div>
 
-                <!-- Toolbar -->
+                <!-- Toolbar without role or aria-label -->
                 <div class="toolbar">
-                    <button
-                        id="btn-new-todo"
-                        class="toolbar-btn toolbar-btn-primary"
-                    >
-                        <span>➕</span> New Todo
+                    <!-- Buttons without proper accessible names -->
+                    <button id="btn-new-todo" class="toolbar-btn toolbar-btn-primary">
+                        ➕
                     </button>
-                    <button
-                        id="btn-projects"
-                        class="toolbar-btn toolbar-btn-secondary"
-                    >
-                        <span>📁</span> Projects
+                    <button id="btn-projects" class="toolbar-btn toolbar-btn-secondary">
+                        📁
                     </button>
-                    <button
-                        id="btn-refresh"
-                        class="toolbar-btn toolbar-btn-secondary"
-                    >
-                        <span>🔄</span> Refresh
+                    <button id="btn-refresh" class="toolbar-btn toolbar-btn-secondary">
+                        🔄
                     </button>
                 </div>
             </header>
 
-            <!-- Main Content -->
-            <main class="app-main">
+            <!-- Main Content without proper heading structure -->
+            <div class="app-main">
                 <div class="kanban-container">
+                    <!-- Kanban board without aria-label or role -->
                     <div id="kanban-board"></div>
                 </div>
-            </main>
+            </div>
         </div>
 
-        <!-- Todo Form Modal -->
+        <!-- Modal without proper ARIA attributes -->
         <div id="todo-form-modal" class="hidden"></div>
 
         <!-- Main Application Module -->

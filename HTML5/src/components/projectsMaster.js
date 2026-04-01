@@ -1,7 +1,7 @@
 import { createProject } from '../models/todo.js';
 
 /**
- * Projects Master Management Component - Custom modal implementation
+ * Projects Master Management Component - Custom modal with intentional a11y issues
  */
 export class ProjectsMaster {
   constructor(containerId, options = {}) {
@@ -13,24 +13,22 @@ export class ProjectsMaster {
     this.projects = [];
   }
 
-  /**
-   * Set projects data
-   */
   setProjects(projects) {
     this.projects = projects;
   }
 
-  /**
-   * Show the projects master modal
-   */
   show() {
+    // ISSUE: Table without proper caption or summary
+    // ISSUE: Action buttons without descriptive labels
     const modalHtml = `
       <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" id="projects-modal-overlay">
         <div class="bg-gray-800 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
           <div class="p-6">
             <div class="flex justify-between items-center mb-4">
-              <h3 class="text-xl font-bold text-white">Projects Master</h3>
-              <button id="btn-close-projects" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+              <!-- ISSUE: Using div instead of h2 -->
+              <div class="text-xl font-bold text-white">Projects Master</div>
+              <!-- ISSUE: Button with only X symbol, no accessible name -->
+              <button id="btn-close-projects" class="text-gray-400 hover:text-white text-2xl">×</button>
             </div>
             
             <button id="btn-add-project" class="mb-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors">
@@ -38,6 +36,7 @@ export class ProjectsMaster {
             </button>
             
             <div class="overflow-x-auto">
+              <!-- ISSUE: Table without proper scope on th elements -->
               <table class="w-full text-left text-white">
                 <thead class="bg-gray-700">
                   <tr>
@@ -54,6 +53,7 @@ export class ProjectsMaster {
                       <td class="p-3 max-w-xs truncate">${p.description || 'No description'}</td>
                       <td class="p-3">${new Date(p.createdAt).toLocaleDateString()}</td>
                       <td class="p-3">
+                        <!-- ISSUE: Buttons without unique accessible names -->
                         <button class="edit-project px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm mr-2" data-id="${p.id}">Edit</button>
                         <button class="delete-project px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded text-sm" data-id="${p.id}">Delete</button>
                       </td>
@@ -68,7 +68,6 @@ export class ProjectsMaster {
       </div>
     `;
 
-    // Create modal container
     let modalContainer = document.getElementById('projects-master-modal');
     if (!modalContainer) {
       modalContainer = document.createElement('div');
@@ -77,27 +76,22 @@ export class ProjectsMaster {
     }
     modalContainer.innerHTML = modalHtml;
 
-    // Show modal
     modalContainer.classList.remove('hidden');
 
-    // Close handler
     document.getElementById('btn-close-projects')?.addEventListener('click', () => {
       this.hide();
     });
 
-    // Close on overlay click
     document.getElementById('projects-modal-overlay')?.addEventListener('click', (e) => {
       if (e.target === e.currentTarget) {
         this.hide();
       }
     });
 
-    // Add button handler
     document.getElementById('btn-add-project')?.addEventListener('click', () => {
       this.openProjectForm();
     });
 
-    // Edit button handlers
     document.querySelectorAll('.edit-project').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const id = e.target.dataset.id;
@@ -108,7 +102,6 @@ export class ProjectsMaster {
       });
     });
 
-    // Delete button handlers
     document.querySelectorAll('.delete-project').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const id = e.target.dataset.id;
@@ -119,9 +112,6 @@ export class ProjectsMaster {
     });
   }
 
-  /**
-   * Hide the modal
-   */
   hide() {
     const modalContainer = document.getElementById('projects-master-modal');
     if (modalContainer) {
@@ -130,13 +120,11 @@ export class ProjectsMaster {
     }
   }
 
-  /**
-   * Open project form modal
-   */
   openProjectForm(project = null) {
     const isEdit = !!project;
     const title = isEdit ? 'Edit Project' : 'New Project';
     
+    // ISSUE: Same modal a11y issues as TodoForm
     const formHtml = `
       <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" id="project-form-overlay">
         <div class="bg-gray-800 rounded-lg w-full max-w-md">
@@ -166,7 +154,6 @@ export class ProjectsMaster {
       </div>
     `;
 
-    // Create form container
     let formContainer = document.getElementById('project-form-container');
     if (!formContainer) {
       formContainer = document.createElement('div');
@@ -175,7 +162,6 @@ export class ProjectsMaster {
     }
     formContainer.innerHTML = formHtml;
 
-    // Close handlers
     document.getElementById('btn-cancel-project')?.addEventListener('click', () => {
       this.closeProjectForm();
     });
@@ -186,11 +172,11 @@ export class ProjectsMaster {
       }
     });
 
-    // Save handler
     document.getElementById('btn-save-project')?.addEventListener('click', () => {
       const name = document.getElementById('project-name')?.value || '';
       const description = document.getElementById('project-description')?.value || '';
 
+      // ISSUE: Error in alert, not accessible
       if (!name.trim()) {
         alert('Project name is required');
         return;
@@ -206,14 +192,10 @@ export class ProjectsMaster {
       this.onProjectSaved(projectData);
       this.closeProjectForm();
       
-      // Refresh the projects list
       setTimeout(() => this.show(), 100);
     });
   }
 
-  /**
-   * Close project form
-   */
   closeProjectForm() {
     const formContainer = document.getElementById('project-form-container');
     if (formContainer) {

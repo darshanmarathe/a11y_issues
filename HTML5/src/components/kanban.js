@@ -1,7 +1,7 @@
 import { Status, Priority } from '../models/todo.js';
 
 /**
- * Kanban Board Component - Custom implementation without jQXWidgets
+ * Kanban Board Component - Custom implementation with intentional a11y issues
  */
 export class KanbanBoard {
   constructor(containerId, options = {}) {
@@ -11,13 +11,8 @@ export class KanbanBoard {
     this.onTodoChange = options.onTodoChange || (() => {});
     this.items = [];
     this.draggedItem = null;
-    
-    console.log('[KanbanBoard] Constructor called for', containerId);
   }
 
-  /**
-   * Get color based on priority
-   */
   getPriorityColor(priority) {
     const colors = {
       [Priority.URGENT]: '#ef4444',
@@ -28,18 +23,12 @@ export class KanbanBoard {
     return colors[priority] || '#6b7280';
   }
 
-  /**
-   * Format date for display
-   */
   formatDate(dateString) {
     if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
-  /**
-   * Create card HTML
-   */
   createCard(item) {
     const priorityColor = this.getPriorityColor(item.priority);
     const isOverdue = item.targetCompletionDate && 
@@ -47,10 +36,15 @@ export class KanbanBoard {
       item.status !== Status.DONE;
     
     const card = document.createElement('div');
+    // ISSUE: Using div instead of button/article, no role attribute
+    // ISSUE: No aria-label for screen readers
+    // ISSUE: draggable without keyboard alternative
     card.className = 'kanban-card p-3 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition-colors mb-2 select-none';
     card.draggable = true;
     card.dataset.id = item.id;
     
+    // ISSUE: Link without accessible text (emoji only)
+    // ISSUE: Color-only indication for priority and overdue status
     card.innerHTML = `
       <div class="flex justify-between items-start mb-2">
         <span class="text-xs px-2 py-1 rounded text-white" style="background-color: ${priorityColor}">${item.priority}</span>
@@ -69,14 +63,14 @@ export class KanbanBoard {
       ${item.projectId ? `<div class="mt-2 text-xs text-blue-400">📁 ${item.projectId}</div>` : ''}
     `;
     
-    // Click handler
+    // ISSUE: Click handler on div without keyboard support
     card.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
       this.onTodoClick(item);
     });
     
-    // Drag handlers
+    // ISSUE: Drag without keyboard alternative
     card.addEventListener('dragstart', (e) => {
       this.draggedItem = item;
       card.classList.add('opacity-50');
@@ -92,16 +86,16 @@ export class KanbanBoard {
     return card;
   }
 
-  /**
-   * Create column HTML
-   */
   createColumn(status, label) {
     const column = document.createElement('div');
-    column.className = 'kanban-column bg-gray-750 rounded-lg flex flex-col min-w-[280px] max-w-[280px]';
+    // ISSUE: No role="region" or aria-label for column
+    column.className = 'kanban-column bg-gray-800 rounded-lg flex flex-col min-w-[280px] max-w-[280px]';
     column.dataset.status = status;
     
     const items = this.items.filter(item => item.status === status);
     
+    // ISSUE: Using div for header instead of proper heading element
+    // ISSUE: No aria-live region for dynamic content updates
     column.innerHTML = `
       <div class="kanban-column-header p-3 font-semibold text-white border-b border-gray-600 rounded-t-lg flex justify-between items-center" style="background-color: ${this.getStatusColor(status)}">
         <span>${label}</span>
@@ -112,7 +106,7 @@ export class KanbanBoard {
     
     const content = column.querySelector('.kanban-column-content');
     
-    // Drop zone handlers
+    // ISSUE: Drop zone not keyboard accessible
     content.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
@@ -135,7 +129,6 @@ export class KanbanBoard {
       }
     });
     
-    // Add cards
     items.forEach(item => {
       content.appendChild(this.createCard(item));
     });
@@ -143,9 +136,6 @@ export class KanbanBoard {
     return column;
   }
 
-  /**
-   * Get status color
-   */
   getStatusColor(status) {
     const colors = {
       [Status.BACKLOG]: '#6b7280',
@@ -157,12 +147,7 @@ export class KanbanBoard {
     return colors[status] || '#6b7280';
   }
 
-  /**
-   * Handle item move
-   */
   handleItemMove(item, newStatus) {
-    console.log('[KanbanBoard] Item moved:', item.id, 'to', newStatus);
-    
     if (item.status !== newStatus) {
       item.status = newStatus;
       if (newStatus === Status.DONE) {
@@ -177,11 +162,7 @@ export class KanbanBoard {
     }
   }
 
-  /**
-   * Initialize the Kanban board
-   */
   init(items) {
-    console.log('[KanbanBoard] init() called with', items.length, 'items');
     this.items = items;
     
     const container = document.querySelector(this.containerId);
@@ -191,9 +172,9 @@ export class KanbanBoard {
     }
     
     container.innerHTML = '';
+    // ISSUE: No role="list" or aria-label on container
     container.className = 'flex gap-4 p-4 h-full overflow-x-auto';
     
-    // Create columns
     const columns = [
       { status: Status.BACKLOG, label: '📋 Backlog' },
       { status: Status.LINEDUP, label: '📝 Lined Up' },
@@ -205,20 +186,12 @@ export class KanbanBoard {
     columns.forEach(({ status, label }) => {
       container.appendChild(this.createColumn(status, label));
     });
-    
-    console.log('[KanbanBoard] Kanban initialized successfully');
   }
 
-  /**
-   * Render the board
-   */
   render() {
     this.init(this.items);
   }
 
-  /**
-   * Update an item
-   */
   updateItem(item) {
     const index = this.items.findIndex(i => i.id === item.id);
     if (index !== -1) {
@@ -227,17 +200,11 @@ export class KanbanBoard {
     }
   }
 
-  /**
-   * Add a new item
-   */
   addItem(item) {
     this.items.push(item);
     this.render();
   }
 
-  /**
-   * Remove an item
-   */
   removeItem(itemId) {
     this.items = this.items.filter(i => i.id !== itemId);
     this.render();
