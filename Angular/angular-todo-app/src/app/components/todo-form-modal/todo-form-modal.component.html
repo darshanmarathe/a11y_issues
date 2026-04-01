@@ -1,27 +1,24 @@
 <div class="modal-backdrop" (click)="onCancel()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3 class="modal-title">{{ todo() ? 'Edit Todo' : 'Add New Todo' }}</h3>
-      <button class="btn-close" (click)="onCancel()"></button>
+      <h3>{{ todo() ? 'Edit Todo' : 'Add New Todo' }}</h3>
+      <button class="btn-close" (click)="onCancel()">×</button>
     </div>
 
     <div class="modal-body">
       <div class="form-group">
-        <label for="title">Title <span class="required">*</span></label>
-        <input 
-          type="text" 
-          id="title"
-          class="form-control" 
+        <label>Title <span style="color: red">*</span></label>
+        <input
+          type="text"
+          class="form-control"
           [(ngModel)]="formData().title"
-          placeholder="Enter todo title"
-          required>
+          placeholder="Enter todo title">
       </div>
 
       <div class="form-group">
-        <label for="description">Description</label>
-        <textarea 
-          id="description"
-          class="form-control" 
+        <label>Description</label>
+        <textarea
+          class="form-control"
           [(ngModel)]="formData().description"
           placeholder="Enter description"
           rows="3">
@@ -30,17 +27,17 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="status">Status</label>
-          <select id="status" class="form-control" [(ngModel)]="formData().status">
+          <label>Status</label>
+          <select class="form-control" [(ngModel)]="formData().status">
             @for (status of statuses; track status) {
-              <option [value]="status">{{ status }}</option>
+              <option [style.color]="getStatusColor(status)">{{ status }}</option>
             }
           </select>
         </div>
 
         <div class="form-group">
-          <label for="priority">Priority</label>
-          <select id="priority" class="form-control" [(ngModel)]="formData().priority">
+          <label>Priority</label>
+          <select class="form-control" [(ngModel)]="formData().priority">
             @for (priority of priorities; track priority) {
               <option [value]="priority">{{ priority }}</option>
             }
@@ -50,17 +47,16 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="targetCompletionDate">Target Completion Date</label>
-          <input 
-            type="date" 
-            id="targetCompletionDate"
-            class="form-control" 
+          <label>Target Completion Date</label>
+          <input
+            type="date"
+            class="form-control"
             [(ngModel)]="formData().targetCompletionDate">
         </div>
 
         <div class="form-group">
-          <label for="userId">Assign To <span class="required">*</span></label>
-          <select id="userId" class="form-control" [(ngModel)]="formData().userId">
+          <label>Assign To <span style="color: red">*</span></label>
+          <select class="form-control" [(ngModel)]="formData().userId">
             <option value="">Select User</option>
             @for (user of users(); track user.id) {
               <option [value]="user.id">{{ user.name }}</option>
@@ -70,11 +66,10 @@
       </div>
 
       <div class="form-group">
-        <label for="link">Link</label>
-        <input 
-          type="url" 
-          id="link"
-          class="form-control" 
+        <label>Link</label>
+        <input
+          type="text"
+          class="form-control"
           [(ngModel)]="formData().link"
           placeholder="https://example.com">
       </div>
@@ -83,15 +78,19 @@
         <label>Projects</label>
         <div class="projects-checkboxes">
           @for (project of projects(); track project.id) {
-            <label class="checkbox-item">
-              <input 
-                type="checkbox" 
+            <label>
+              <input
+                type="checkbox"
                 [checked]="isProjectSelected(project.id)"
                 (change)="onProjectChange(project.id, $event)">
-              <span>{{ project.name }}</span>
+              {{ project.name }}
             </label>
           }
         </div>
+      </div>
+
+      <div style="color: #999; font-size: 12px; margin-top: 10px;">
+        Fields marked with * are required
       </div>
     </div>
 

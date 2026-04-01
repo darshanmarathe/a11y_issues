@@ -119,4 +119,15 @@ export class TodoFormModalComponent implements OnInit {
   isProjectSelected(projectId: string): boolean {
     return this.formData().projects.includes(projectId);
   }
+
+  getStatusColor(status: string): string {
+    const colors: Record<string, string> = {
+      'Backlog': '#6c757d',
+      'Linedup': '#17a2b8',
+      'Wip': '#ffc107',
+      'Done': '#28a745',
+      'Stuck': '#dc3545'
+    };
+    return colors[status] || '#000';
+  }
 }

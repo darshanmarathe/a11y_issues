@@ -1,6 +1,6 @@
-<div class="kanban-container">
+<div>
   <div class="kanban-header">
-    <h2 class="page-title">Todo Kanban Board</h2>
+    <h2>Todo Kanban Board</h2>
     <button class="btn btn-primary" (click)="openAddModal()">
       <i class="bi bi-plus-lg"></i> Add Todo
     </button>
@@ -8,8 +8,8 @@
 
   <div class="kanban-board">
     @for (status of statuses; track status) {
-      <div class="kanban-column" 
-           (dragover)="onDragOver($event)" 
+      <div class="kanban-column"
+           (dragover)="onDragOver($event)"
            (drop)="onDrop($event, status)">
         <div class="kanban-column-header" [style.border-top-color]="statusConfig[status].color">
           <h3 class="kanban-column-title">
@@ -21,23 +21,23 @@
 
         <div class="kanban-cards">
           @for (todo of getTodosByStatus(status); track todo.id) {
-            <div class="kanban-card" 
+            <div class="kanban-card"
                  draggable="true"
                  (dragstart)="onDragStart(todo)"
                  [class.completed]="todo.isCompleted">
               <div class="card-header">
                 <div class="card-title-section">
                   <h4 class="card-title">{{ todo.title }}</h4>
-                  <span class="priority-badge" 
+                  <span class="priority-badge"
                         [style.background-color]="priorityColors[todo.priority]">
                     {{ todo.priority }}
                   </span>
                 </div>
                 <div class="card-actions">
-                  <button class="btn-icon" (click)="openEditModal(todo)" title="Edit">
+                  <button class="btn-icon" (click)="openEditModal(todo)">
                     <i class="bi bi-pencil"></i>
                   </button>
-                  <button class="btn-icon btn-icon-danger" (click)="deleteTodo(todo)" title="Delete">
+                  <button class="btn-icon btn-icon-danger" (click)="deleteTodo(todo)">
                     <i class="bi bi-trash"></i>
                   </button>
                 </div>
@@ -58,11 +58,10 @@
                   <span>{{ getUserName(todo.userId) }}</span>
                 </div>
                 <div class="card-completion">
-                  <label class="checkbox-label">
-                    <input type="checkbox" 
-                           [checked]="todo.isCompleted" 
+                  <label>
+                    <input type="checkbox"
+                           [checked]="todo.isCompleted"
                            (change)="toggleComplete(todo)">
-                    <span class="checkmark"></span>
                     Done
                   </label>
                 </div>
@@ -79,7 +78,7 @@
 
               @if (todo.link) {
                 <div class="card-link">
-                  <a [href]="todo.link" target="_blank" rel="noopener">
+                  <a [href]="todo.link" target="_blank">
                     <i class="bi bi-link-45deg"></i> Link
                   </a>
                 </div>
