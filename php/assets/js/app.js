@@ -1,14 +1,21 @@
 // Todo Kanban Application
+let allTodos = [];
+let currentFilter = null;
+
 $(document).ready(function() {
+    // Hide preloader after page loads
+    setTimeout(() => {
+        $('.preloader').fadeOut();
+    }, 500);
+    
     // Initialize jqxWidgets
     initializeJqxWidgets();
     
     // Set current date
     $('#currentDate').text(new Date().toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+        weekday: 'short', 
+        month: 'short', 
+        day: 'numeric'
     }));
     
     // Load initial data
@@ -21,12 +28,26 @@ $(document).ready(function() {
     $('#deleteBtn').click(deleteTodo);
     $('#refreshBtn').click(function(e) {
         e.preventDefault();
+        $(this).find('i').addClass('fa-spin');
         loadTodos();
+        setTimeout(() => {
+            $('#refreshBtn i').removeClass('fa-spin');
+        }, 1000);
     });
     
     $('.add-todo-btn').click(function() {
         const status = $(this).data('status');
         openTodoModal(null, status);
+    });
+    
+    // Search functionality
+    $('#searchInput').on('input', function() {
+        searchTodos($(this).val());
+    });
+    
+    // Settings
+    $('#compactMode').change(function() {
+        $('body').toggleClass('compact-mode', this.checked);
     });
     
     // Initialize drag and drop
@@ -35,34 +56,100 @@ $(document).ready(function() {
 
 // Initialize jqxWidgets controls
 function initializeJqxWidgets() {
-    // Initialize jqxDateTimeInput for target date
-    $('#todoTargetDate').jqxDateTimeInput({
-        width: '100%',
-        height: 38,
-        formatString: 'yyyy-MM-dd',
-        theme: 'material'
-    });
+    try {
+        // Initialize jqxDateTimeInput for target date if available
+        if ($.fn.jqxDateTimeInput) {
+            $('#todoTargetDate').jqxDateTimeInput({
+                width: '100%',
+                height: 38,
+                formatString: 'yyyy-MM-dd',
+                theme: 'material'
+            });
+        }
+    } catch(e) {
+        console.log('jqxWidgets not fully loaded, using native date picker');
+    }
 }
 
 // Load all todos
 function loadTodos() {
-    $.get('api/index.php', { resource: 'todos' }, function(response) {
-        if (response.error) {
-            showError(response.error);
+    $.ajax({
+        url: 'api/index.php',
+        data: { resource: 'todos' },
+        dataType: 'json',
+        method: 'GET'
+    }).done(function(response) {
+        if (response && response.error) {
+            showError('API Error: ' + response.error);
             return;
         }
         
-        renderKanbanBoard(response);
-        updateStatistics(response);
+        allTodos = response || [];
+        applyFilters();
+        updateStatistics(allTodos);
+        updateNotifications(allTodos);
     }).fail(function(xhr, status, error) {
-        showError('Failed to load todos: ' + error);
+        let errorMsg = 'Failed to load todos';
+        
+        if (xhr.status === 500) {
+            try {
+                const resp = JSON.parse(xhr.responseText);
+                errorMsg = 'Server Error: ' + (resp.error || resp.message || 'Unknown error');
+                if (resp.file) errorMsg += '\nFile: ' + resp.file;
+                if (resp.line) errorMsg += '\nLine: ' + resp.line;
+            } catch(e) {
+                errorMsg = 'Server Error (500): ' + (xhr.responseText || 'Internal Server Error');
+            }
+        } else if (xhr.status === 0) {
+            errorMsg = 'Cannot connect to server. Make sure PHP server is running.\n\nRun run.bat to start the server.';
+        } else {
+            errorMsg += ': ' + error + ' (Status: ' + xhr.status + ')';
+        }
+        
+        showError(errorMsg);
     });
+}
+
+// Apply current filter
+function applyFilters() {
+    let filtered = allTodos;
+    
+    if (currentFilter === 'Urgent') {
+        filtered = allTodos.filter(t => t.priority === 'Urgent');
+    } else if (currentFilter === 'High') {
+        filtered = allTodos.filter(t => t.priority === 'High');
+    } else if (currentFilter === 'Completed') {
+        filtered = allTodos.filter(t => t.isCompleted == 1);
+    }
+    
+    renderKanbanBoard(filtered);
+}
+
+// Filter by priority
+function filterByPriority(priority) {
+    currentFilter = priority;
+    applyFilters();
+    showSuccess(`Showing ${priority} priority todos`);
+}
+
+// Filter by completed
+function filterByCompleted() {
+    currentFilter = 'Completed';
+    applyFilters();
+    showSuccess('Showing completed todos');
+}
+
+// Clear filters
+function clearFilters() {
+    currentFilter = null;
+    applyFilters();
+    showSuccess('Showing all todos');
 }
 
 // Render Kanban board with todos
 function renderKanbanBoard(todos) {
     // Clear all columns
-    $('.kanban-column-body').empty();
+    $('.kanban-body').empty();
     
     // Group todos by status
     const statusMap = {
@@ -81,10 +168,15 @@ function renderKanbanBoard(todos) {
     
     // Render todos in each column
     for (const [status, items] of Object.entries(statusMap)) {
-        const columnBody = $(`.kanban-column-body[data-status="${status}"]`);
+        const columnBody = $(`.kanban-body[data-status="${status}"]`);
         
         if (items.length === 0) {
-            columnBody.html('<div class="empty-state"><i class="fas fa-clipboard-list"></i><p>No todos</p></div>');
+            columnBody.html(`
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <p>No todos</p>
+                </div>
+            `);
         } else {
             items.forEach(function(todo) {
                 const card = createTodoCard(todo);
@@ -114,7 +206,7 @@ function createTodoCard(todo) {
                 <span class="priority-badge ${priorityClass}">${todo.priority}</span>
                 ${todo.project_name ? `<span class="project-badge">${escapeHtml(todo.project_name)}</span>` : ''}
             </div>
-            <div class="card-meta" style="margin-top: 5px;">
+            <div class="card-meta" style="margin-top: 8px;">
                 ${todo.user_name ? `<span class="user-avatar" title="${escapeHtml(todo.user_name)}">${initials}</span>` : ''}
                 ${todo.target_completion_date ? `
                     <span class="target-date-badge ${isOverdue ? 'overdue' : ''}">
@@ -124,10 +216,10 @@ function createTodoCard(todo) {
                 ${todo.link ? `<a href="${escapeHtml(todo.link)}" target="_blank" class="link-badge"><i class="fas fa-link"></i> Link</a>` : ''}
             </div>
             <div class="card-actions">
-                <button class="btn btn-sm btn-primary edit-btn" data-id="${todo.id}">
+                <button class="btn btn-sm btn-outline-primary edit-btn" data-id="${todo.id}">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn btn-sm btn-danger delete-btn" data-id="${todo.id}">
+                <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${todo.id}">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -173,21 +265,51 @@ function updateStatistics(todos) {
         }
     });
     
-    $('#totalTodos').text(stats.total);
-    $('#backlogCount').text(stats.Backlog);
-    $('#linedupCount').text(stats.Linedup);
-    $('#wipCount').text(stats.Wip);
-    $('#doneCount').text(stats.Done);
-    $('#stuckCount').text(stats.Stuck);
+    // Animate numbers
+    animateNumber('#totalTodos', stats.total);
+    animateNumber('#backlogCount', stats.Backlog);
+    animateNumber('#linedupCount', stats.Linedup);
+    animateNumber('#wipCount', stats.Wip);
+    animateNumber('#doneCount', stats.Done);
+    animateNumber('#stuckCount', stats.Stuck);
+}
+
+// Animate number change
+function animateNumber(selector, value) {
+    const element = $(selector);
+    const currentValue = parseInt(element.text()) || 0;
+    
+    if (currentValue !== value) {
+        element.text(value);
+        element.closest('.stat-card').addClass('shadow');
+        setTimeout(() => {
+            element.closest('.stat-card').removeClass('shadow');
+        }, 300);
+    }
+}
+
+// Update notifications
+function updateNotifications(todos) {
+    const overdueCount = todos.filter(t => 
+        isTargetDateOverdue(t.target_completion_date) && t.isCompleted != 1
+    ).length;
+    
+    $('#notificationBadge').text(overdueCount);
+    if (overdueCount > 0) {
+        $('#overdueNotif').html(`<strong>${overdueCount}</strong> overdue todo${overdueCount > 1 ? 's' : ''}`);
+    } else {
+        $('#overdueNotif').text('No overdue todos');
+    }
 }
 
 // Load projects
 function loadProjects() {
-    $.get('api/index.php', { resource: 'projects' }, function(response) {
-        if (response.error) {
-            showError(response.error);
-            return;
-        }
+    $.ajax({
+        url: 'api/index.php',
+        data: { resource: 'projects' },
+        dataType: 'json'
+    }).done(function(response) {
+        if (response.error) return;
         
         const select = $('#todoProject');
         select.empty().append('<option value="">Select Project</option>');
@@ -200,11 +322,12 @@ function loadProjects() {
 
 // Load users
 function loadUsers() {
-    $.get('api/index.php', { resource: 'users' }, function(response) {
-        if (response.error) {
-            showError(response.error);
-            return;
-        }
+    $.ajax({
+        url: 'api/index.php',
+        data: { resource: 'users' },
+        dataType: 'json'
+    }).done(function(response) {
+        if (response.error) return;
         
         const select = $('#todoUser');
         select.empty().append('<option value="">Select User</option>');
@@ -219,7 +342,7 @@ function loadUsers() {
 function openTodoModal(todoId = null, defaultStatus = 'Backlog') {
     if (todoId) {
         // Edit mode
-        $('#modalTitle').text('Edit Todo');
+        $('#modalTitle').html('<i class="fas fa-edit me-2"></i>Edit Todo');
         $('#deleteBtn').show();
         
         $.get('api/index.php', { resource: 'todos', id: todoId }, function(todo) {
@@ -239,17 +362,18 @@ function openTodoModal(todoId = null, defaultStatus = 'Backlog') {
             $('#todoLink').val(todo.link || '');
             $('#todoCompleted').prop('checked', todo.isCompleted == 1);
             
-            $('#todoModal').modal('show');
+            new bootstrap.Modal(document.getElementById('todoModal')).show();
         });
     } else {
         // New mode
-        $('#modalTitle').text('Add New Todo');
+        $('#modalTitle').html('<i class="fas fa-plus-circle me-2"></i>Add New Todo');
         $('#deleteBtn').hide();
         $('#todoForm')[0].reset();
         $('#todoId').val('');
         $('#todoStatus').val(defaultStatus);
         $('#todoCompleted').prop('checked', false);
-        $('#todoModal').modal('show');
+        
+        new bootstrap.Modal(document.getElementById('todoModal')).show();
     }
 }
 
@@ -277,6 +401,8 @@ function saveTodo() {
     const method = todoId ? 'PUT' : 'POST';
     const url = todoId ? `api/index.php?resource=todos&id=${todoId}` : 'api/index.php?resource=todos';
     
+    $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i> Saving...');
+    
     $.ajax({
         url: url,
         method: method,
@@ -288,12 +414,15 @@ function saveTodo() {
                 return;
             }
             
-            $('#todoModal').modal('hide');
+            bootstrap.Modal.getInstance(document.getElementById('todoModal')).hide();
             loadTodos();
             showSuccess(todoId ? 'Todo updated successfully' : 'Todo created successfully');
         },
         error: function(xhr, status, error) {
             showError('Failed to save todo: ' + error);
+        },
+        complete: function() {
+            $('#saveBtn').prop('disabled', false).html('<i class="fas fa-save me-1"></i> Save Changes');
         }
     });
 }
@@ -330,19 +459,50 @@ function deleteTodo() {
     }
 }
 
+// Search todos
+function searchTodos(query) {
+    if (!query.trim()) {
+        renderKanbanBoard(allTodos);
+        return;
+    }
+    
+    const results = allTodos.filter(todo => 
+        todo.title.toLowerCase().includes(query.toLowerCase()) ||
+        (todo.description && todo.description.toLowerCase().includes(query.toLowerCase())) ||
+        (todo.project_name && todo.project_name.toLowerCase().includes(query.toLowerCase()))
+    );
+    
+    $('#searchResults').html(`<p class="text-muted">${results.length} result${results.length !== 1 ? 's' : ''} found</p>`);
+    
+    results.forEach(function(todo) {
+        const item = $(`
+            <div class="mb-2 p-2 border rounded" style="cursor:pointer" data-id="${todo.id}">
+                <div class="fw-semibold">${escapeHtml(todo.title)}</div>
+                <small class="text-muted">${todo.status} | ${todo.priority}</small>
+            </div>
+        `);
+        item.click(function() {
+            bootstrap.Modal.getInstance(document.getElementById('searchModal')).hide();
+            openTodoModal(todo.id);
+        });
+        $('#searchResults').append(item);
+    });
+}
+
 // Drag and Drop functionality
 let draggedElement = null;
 
 function initDragAndDrop() {
-    $('.kanban-column-body').on('dragover', handleDragOver);
-    $('.kanban-column-body').on('dragleave', handleDragLeave);
-    $('.kanban-column-body').on('drop', handleDrop);
+    $('.kanban-body').on('dragover', handleDragOver);
+    $('.kanban-body').on('dragleave', handleDragLeave);
+    $('.kanban-body').on('drop', handleDrop);
 }
 
 function handleDragStart(e) {
     draggedElement = this;
     $(this).addClass('dragging');
     e.originalEvent.dataTransfer.effectAllowed = 'move';
+    e.originalEvent.dataTransfer.setData('text/plain', '');
 }
 
 function handleDragEnd(e) {
@@ -367,6 +527,11 @@ function handleDrop(e) {
     if (draggedElement) {
         const newStatus = $(this).data('status');
         const todoId = $(draggedElement).data('id');
+        
+        // Visual feedback
+        const column = $(this).closest('.kanban-column');
+        column.css('transform', 'scale(1.02)');
+        setTimeout(() => column.css('transform', ''), 200);
         
         // Update todo status
         $.ajax({
@@ -405,7 +570,7 @@ function escapeHtml(text) {
 function formatDate(dateString) {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
 function isTargetDateOverdue(dateString) {
@@ -417,10 +582,31 @@ function isTargetDateOverdue(dateString) {
 }
 
 function showError(message) {
-    alert('Error: ' + message);
+    const alertHtml = `
+        <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3" 
+             role="alert" style="z-index: 9999; max-width: 400px;">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <strong>Error:</strong> ${escapeHtml(message)}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    $('body').append(alertHtml);
+    setTimeout(() => {
+        $('.alert-dismissible').alert('close');
+    }, 5000);
 }
 
 function showSuccess(message) {
-    // You can replace this with a toast notification
-    console.log('Success: ' + message);
+    const alertHtml = `
+        <div class="alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3" 
+             role="alert" style="z-index: 9999; max-width: 400px;">
+            <i class="fas fa-check-circle me-2"></i>
+            ${escapeHtml(message)}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    $('body').append(alertHtml);
+    setTimeout(() => {
+        $('.alert-dismissible').alert('close');
+    }, 3000);
 }
