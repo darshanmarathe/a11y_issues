@@ -116,6 +116,7 @@ export default function Dashboard() {
         onDragStart={() => handleDragStart(todo)}
         className="p-3 mb-2 border-round shadow-sm hover:shadow-md transition-all cursor-move bg-white group relative"
         style={{ borderLeft: `4px solid ${priorityColorMap[todo.priority]}` }}
+        tabIndex={-1}
       >
         <button
           className="edit-btn absolute top-2 right-2 p-button p-component p-button-text p-button-rounded p-button-sm opacity-0 group-hover:opacity-100 transition-opacity"
@@ -144,7 +145,7 @@ export default function Dashboard() {
         {user && (
           <div className="mt-2 flex align-items-center gap-1">
             {user.avatar && (
-              <img src={user.avatar} alt={user.name} className="w-1rem h-1rem border-circle" />
+              <img src={user.avatar} className="w-1rem h-1rem border-circle" />
             )}
             <span className="text-xs text-600">{user.name}</span>
           </div>
@@ -183,7 +184,7 @@ export default function Dashboard() {
   return (
     <div className="dashboard-page">
       <div className="mb-4">
-        <h1 className="text-3xl font-bold m-0 text-900">Dashboard</h1>
+        <div className="text-3xl font-bold m-0 text-900">Dashboard</div>
         <p className="text-600 mt-1">Overview of your tasks and projects</p>
       </div>
 

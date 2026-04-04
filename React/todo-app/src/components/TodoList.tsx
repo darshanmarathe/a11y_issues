@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -9,9 +9,8 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
 import { Toast } from 'primereact/toast';
-import { Tag } from 'primereact/tag';
 import type { RootState, AppDispatch } from '../app/store';
-import { createTodo, updateTodo, deleteTodo } from '../features/todos/todosSlice';
+import { createTodo, updateTodo, deleteTodo, fetchTodos } from '../features/todos/todosSlice';
 import type { Todo, Status, Priority } from '../types';
 
 const statusOptions: Status[] = ['Backlog', 'Linedup', 'Wip', 'Done', 'Stuck'];
@@ -48,6 +47,14 @@ export default function TodoList() {
     priority: 'Medium',
     isCompleted: false,
   });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      dispatch(fetchTodos());
+      document.querySelector('.p-datatable-wrapper')?.scrollTo({ top: 0 });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [dispatch]);
 
   const resetForm = () => {
     setFormData({
@@ -88,6 +95,7 @@ export default function TodoList() {
     if (isEdit && selectedTodo) {
       dispatch(updateTodo({ id: selectedTodo.id, todo: formData })).then(() => {
         hideDialog();
+        document.body.focus();
       });
     } else {
       dispatch(
@@ -101,6 +109,7 @@ export default function TodoList() {
         } as Omit<Todo, 'id' | 'created_at' | 'updated_at'> & { created_at: string; updated_at: string })
       ).then(() => {
         hideDialog();
+        document.body.focus();
       });
     }
   };
@@ -113,20 +122,20 @@ export default function TodoList() {
 
   const statusBodyTemplate = (rowData: Todo) => {
     return (
-      <Tag
-        value={rowData.status}
-        severity={statusColorMap[rowData.status] as any}
-        className="min-w-[80px]"
+      <span
+        className="w-2rem h-2rem inline-block border-round"
+        style={{ backgroundColor: statusColorMap[rowData.status] === 'secondary' ? '#6c757d' : statusColorMap[rowData.status] === 'info' ? '#17a2b8' : statusColorMap[rowData.status] === 'warning' ? '#ffc107' : statusColorMap[rowData.status] === 'success' ? '#28a745' : '#dc3545' }}
+        title={rowData.status}
       />
     );
   };
 
   const priorityBodyTemplate = (rowData: Todo) => {
     return (
-      <Tag
-        value={rowData.priority}
-        severity={priorityColorMap[rowData.priority] as any}
-        className="min-w-[60px]"
+      <span
+        className="w-1rem h-1rem inline-block border-circle"
+        style={{ backgroundColor: priorityColorMap[rowData.priority] === 'danger' ? '#dc3545' : priorityColorMap[rowData.priority] === 'warning' ? '#fd7e14' : priorityColorMap[rowData.priority] === 'info' ? '#17a2b8' : '#28a745' }}
+        title={rowData.priority}
       />
     );
   };
@@ -153,7 +162,6 @@ export default function TodoList() {
         {user.avatar && (
           <img
             src={user.avatar}
-            alt={user.name}
             className="w-2rem h-2rem border-circle"
           />
         )}
@@ -175,7 +183,7 @@ export default function TodoList() {
   const linkBodyTemplate = (rowData: Todo) => {
     return rowData.link ? (
       <a href={rowData.link} target="_blank" rel="noopener noreferrer" className="text-blue-500">
-        <i className="pi pi-external-link mr-1" /> Link
+        Link
       </a>
     ) : (
       '-'
@@ -214,7 +222,7 @@ export default function TodoList() {
     <div className="card">
       <Toast />
       <div className="flex justify-content-between align-items-center mb-4">
-        <h2 className="text-2xl font-bold m-0">Todo List</h2>
+        <div className="text-2xl font-bold m-0">Todo List</div>
         <Button label="New Todo" icon="pi pi-plus" onClick={openNew} severity="success" />
       </div>
 
@@ -258,11 +266,8 @@ export default function TodoList() {
       >
         <div className="flex flex-column gap-4">
           <div>
-            <label htmlFor="title" className="font-semibold block mb-2">
-              Title *
-            </label>
+            <span className="font-semibold block mb-2">Title *</span>
             <InputText
-              id="title"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               className="w-full"
@@ -271,11 +276,8 @@ export default function TodoList() {
           </div>
 
           <div>
-            <label htmlFor="description" className="font-semibold block mb-2">
-              Description
-            </label>
+            <span className="font-semibold block mb-2">Description</span>
             <InputTextarea
-              id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               className="w-full"
@@ -286,11 +288,8 @@ export default function TodoList() {
 
           <div className="grid">
             <div className="col-12 md:col-6">
-              <label htmlFor="status" className="font-semibold block mb-2">
-                Status
-              </label>
+              <span className="font-semibold block mb-2">Status</span>
               <Dropdown
-                id="status"
                 value={formData.status}
                 options={statusOptions}
                 onChange={(e) => setFormData({ ...formData, status: e.value })}
@@ -299,11 +298,8 @@ export default function TodoList() {
               />
             </div>
             <div className="col-12 md:col-6">
-              <label htmlFor="priority" className="font-semibold block mb-2">
-                Priority
-              </label>
+              <span className="font-semibold block mb-2">Priority</span>
               <Dropdown
-                id="priority"
                 value={formData.priority}
                 options={priorityOptions}
                 onChange={(e) => setFormData({ ...formData, priority: e.value })}
@@ -315,11 +311,8 @@ export default function TodoList() {
 
           <div className="grid">
             <div className="col-12 md:col-6">
-              <label htmlFor="project" className="font-semibold block mb-2">
-                Project
-              </label>
+              <span className="font-semibold block mb-2">Project</span>
               <Dropdown
-                id="project"
                 value={formData.project_id}
                 options={projects}
                 onChange={(e) => setFormData({ ...formData, project_id: e.value?.id })}
@@ -331,11 +324,8 @@ export default function TodoList() {
               />
             </div>
             <div className="col-12 md:col-6">
-              <label htmlFor="user" className="font-semibold block mb-2">
-                Assignee
-              </label>
+              <span className="font-semibold block mb-2">Assignee</span>
               <Dropdown
-                id="user"
                 value={formData.user_id}
                 options={users}
                 onChange={(e) => setFormData({ ...formData, user_id: e.value?.id })}
@@ -350,11 +340,8 @@ export default function TodoList() {
 
           <div className="grid">
             <div className="col-12 md:col-6">
-              <label htmlFor="targetDate" className="font-semibold block mb-2">
-                Target Completion Date
-              </label>
+              <span className="font-semibold block mb-2">Target Completion Date</span>
               <Calendar
-                id="targetDate"
                 value={formData.target_completion_date ? new Date(formData.target_completion_date) : undefined}
                 onChange={(e) =>
                   setFormData({ ...formData, target_completion_date: e.value?.toISOString() })
@@ -364,11 +351,8 @@ export default function TodoList() {
               />
             </div>
             <div className="col-12 md:col-6">
-              <label htmlFor="link" className="font-semibold block mb-2">
-                Link
-              </label>
+              <span className="font-semibold block mb-2">Link</span>
               <InputText
-                id="link"
                 value={formData.link}
                 onChange={(e) => setFormData({ ...formData, link: e.target.value })}
                 className="w-full"
@@ -380,13 +364,10 @@ export default function TodoList() {
           <div className="flex align-items-center gap-2">
             <input
               type="checkbox"
-              id="isCompleted"
               checked={formData.isCompleted}
               onChange={(e) => setFormData({ ...formData, isCompleted: e.target.checked })}
             />
-            <label htmlFor="isCompleted" className="font-semibold">
-              Mark as Completed
-            </label>
+            <span className="font-semibold">Mark as Completed</span>
           </div>
         </div>
       </Dialog>

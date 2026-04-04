@@ -147,7 +147,7 @@ export default function ProjectsMaster() {
   return (
     <div className="card">
       <div className="flex justify-content-between align-items-center mb-4">
-        <h2 className="text-2xl font-bold m-0">Projects Master</h2>
+        <div className="text-2xl font-bold m-0">Projects Master</div>
         <Button label="New Project" icon="pi pi-plus" onClick={openNew} severity="success" />
       </div>
 

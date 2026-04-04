@@ -41,7 +41,7 @@ export default function Sidebar({ activePage, onNavigate, collapsed, onToggle }:
         </button>
       </div>
 
-      <nav className="sidebar-nav mt-3">
+      <nav className="sidebar-nav mt-3" tabIndex={-1}>
         {menuItems.map((item) => (
           <button
             key={item.id}
@@ -49,7 +49,6 @@ export default function Sidebar({ activePage, onNavigate, collapsed, onToggle }:
               'nav-item-active': activePage === item.id,
             })}
             onClick={() => onNavigate(item.id)}
-            title={collapsed ? item.label : undefined}
           >
             <i className={classNames(item.icon, 'text-xl', { 'nav-icon-collapsed': collapsed })} />
             {!collapsed && <span className="font-medium">{item.label}</span>}
@@ -63,7 +62,6 @@ export default function Sidebar({ activePage, onNavigate, collapsed, onToggle }:
             <div className="flex align-items-center gap-2">
               <img
                 src="https://i.pravatar.cc/150?u=1"
-                alt="User"
                 className="w-2rem h-2rem border-circle"
               />
               <div>

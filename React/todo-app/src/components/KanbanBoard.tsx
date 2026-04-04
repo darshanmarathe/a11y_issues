@@ -103,6 +103,7 @@ export default function KanbanBoard() {
         onDragStart={() => handleDragStart(todo)}
         className="p-3 mb-3 bg-white border-round shadow-sm hover:shadow-md transition-all cursor-move group relative"
         style={{ borderLeft: `4px solid ${priorityColorMap[todo.priority]}` }}
+        tabIndex={-1}
       >
         <button
           className="edit-btn absolute top-2 right-2 p-button p-component p-button-text p-button-rounded p-button-sm opacity-0 group-hover:opacity-100 transition-opacity"
@@ -135,7 +136,7 @@ export default function KanbanBoard() {
           {user && (
             <span className="text-xs px-2 py-1 border-round bg-100 flex align-items-center gap-1">
               {user.avatar && (
-                <img src={user.avatar} alt={user.name} className="w-1rem h-1rem border-circle" />
+                <img src={user.avatar} className="w-1rem h-1rem border-circle" />
               )}
               {user.name}
             </span>
@@ -167,7 +168,7 @@ export default function KanbanBoard() {
   return (
     <div className="kanban-page">
       <div className="mb-4">
-        <h1 className="text-3xl font-bold m-0 text-900">Kanban Board</h1>
+        <div className="text-3xl font-bold m-0 text-900">Kanban Board</div>
         <p className="text-600 mt-1">Drag and drop tasks between columns to update their status</p>
       </div>
 

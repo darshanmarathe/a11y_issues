@@ -8,6 +8,7 @@
 
 * {
   box-sizing: border-box;
+  outline: none !important;
 }
 
 body {
@@ -81,7 +82,7 @@ body {
 
 .nav-item {
   background: transparent;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.35);
   border-radius: 10px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -196,9 +197,10 @@ body {
 
 .p-datatable .p-datatable-header th {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  color: white !important;
-  font-weight: 600;
+  color: #d4d8e0 !important;
+  font-weight: 400;
   border: none !important;
+  font-size: 0.75rem;
 }
 
 .p-datatable .p-datatable-tbody td {
@@ -379,15 +381,14 @@ body {
   width: 2rem;
   height: 2rem;
   border-radius: 50% !important;
-  color: #667eea !important;
+  color: #a0aec0 !important;
   transition: all 0.3s !important;
 }
 
 .edit-btn:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  color: white !important;
+  background: #d4d8e0 !important;
+  color: #e2e8f0 !important;
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 /* Group relative for hover effects */
