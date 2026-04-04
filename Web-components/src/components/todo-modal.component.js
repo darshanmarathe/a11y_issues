@@ -346,6 +346,11 @@ class TodoModalComponent extends HTMLElement {
           align-items: center;
           justify-content: center;
         }
+        
+        .modal-close:hover {
+          background: #f1f5f9;
+          border-radius: 4px;
+        }
 
         .modal-body {
           padding: 20px;
@@ -460,7 +465,7 @@ class TodoModalComponent extends HTMLElement {
       <div class="modal-overlay">
         <div class="modal">
           <div class="modal-header">
-            <h3 id="modal-title">Edit Todo</h3>
+            <div id="modal-title">Edit Todo</div>
             <button class="modal-close">&times;</button>
           </div>
           

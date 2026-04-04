@@ -47,7 +47,7 @@ class KanbanBoardComponent extends HTMLElement {
 
   createCardHTML(todo) {
     return `
-      <div class="kanban-card" draggable="true" data-id="${todo.id}" data-priority="${todo.priority}">
+      <div class="kanban-card" draggable="true" data-id="${todo.id}" data-priority="${todo.priority}" onclick="this.parentElement.parentElement.parentElement.dispatchEvent(new CustomEvent('open-todo-modal', {detail: {todoId: '${todo.id}'}, bubbles: true, composed: true}))">
         <h4>${todo.title}</h4>
         <p>${todo.description || 'No description'}</p>
         <div class="kanban-card-footer">
@@ -257,7 +257,7 @@ class KanbanBoardComponent extends HTMLElement {
             (col) => `
           <div class="kanban-column" data-status="${col.status}">
             <div class="kanban-column-header">
-              <h3>${col.title}</h3>
+              <div>${col.title}</div>
               <span class="count">0</span>
             </div>
             <div class="kanban-cards"></div>

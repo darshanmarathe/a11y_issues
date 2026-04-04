@@ -213,13 +213,13 @@ class TodosPage extends HTMLElement {
       </div>
 
       <div class="filter-bar">
-        <select id="filter-status">
+        <select id="filter-status" onchange="this.parentElement.parentElement.querySelector('#todos-tbody').parentElement.dispatchEvent(new CustomEvent('filter-change', {bubbles: true, detail: {}}))">
           <option value="">All Status</option>
           ${Object.values(TODO_STATUS)
             .map((status) => `<option value="${status}">${status}</option>`)
             .join('')}
         </select>
-        <select id="filter-priority">
+        <select id="filter-priority" onchange="this.parentElement.parentElement.querySelector('#todos-tbody').parentElement.dispatchEvent(new CustomEvent('filter-change', {bubbles: true, detail: {}}))">
           <option value="">All Priority</option>
           ${Object.values(TODO_PRIORITY)
             .map((priority) => `<option value="${priority}">${priority}</option>`)
