@@ -7,12 +7,12 @@
 <div class="content-header mt-2">
     <div class="container-fluid">
         <div class="row mb-2">
-            <div class="col-sm-6">
+            <div class="col-sm-8">
                 <h1 class="m-0"><i class="fas fa-folder-open"></i> Projects Master</h1>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <button class="btn btn-primary float-right" onclick="openAddModal()">
-                    <i class="fas fa-plus"></i> Add Project
+                    <i class="fas fa-plus-circle"></i> Add Project
                 </button>
             </div>
         </div>
@@ -21,13 +21,25 @@
 
 <div class="content">
     <div class="container-fluid">
+        <!-- Search -->
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="form-control form-control-lg" id="searchInput" placeholder="Search projects by name or description..." />
+        </div>
+        
+        <!-- Table -->
         <div class="card card-primary card-outline">
             <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-table"></i> Projects List</h3>
+                <div class="card-tools">
+                    <button class="btn btn-sm btn-primary" onclick="openAddModal()">
+                        <i class="fas fa-plus"></i> New
+                    </button>
+                </div>
             </div>
-            <div class="card-body">
+            <div class="card-body p-0">
                 <table class="table table-bordered table-striped table-hover" id="projectsTable">
-                    <thead class="bg-primary text-white">
+                    <thead>
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
@@ -51,7 +63,9 @@
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h4 class="modal-title" id="modalTitle"><i class="fas fa-plus-circle"></i> Add Project</h4>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form id="projectForm">
@@ -76,7 +90,7 @@
                 <button type="button" class="btn btn-danger" id="deleteProjectBtn" style="display:none;" onclick="deleteProject()">
                     <i class="fas fa-trash"></i> Delete
                 </button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     <i class="fas fa-times"></i> Close
                 </button>
                 <button type="button" class="btn btn-primary" onclick="saveProject()">
@@ -96,6 +110,16 @@
         projectModal = new bootstrap.Modal(document.getElementById('projectModal'));
         
         loadProjects();
+        
+        // Search functionality
+        $('#searchInput').on('keyup', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            const filtered = projects.filter(project => 
+                project.name.toLowerCase().includes(searchTerm) ||
+                (project.description && project.description.toLowerCase().includes(searchTerm))
+            );
+            renderTable(filtered);
+        });
     });
 
     function loadProjects() {
@@ -105,11 +129,17 @@
         });
     }
 
-    function renderTable() {
+    function renderTable(data) {
+        data = data || projects;
         const tbody = $('#projectsTable tbody');
         tbody.empty();
         
-        projects.forEach(project => {
+        if (data.length === 0) {
+            tbody.append('<tr><td colspan="7" class="text-center text-muted py-4"><i class="fas fa-folder-open fa-2x mb-2 d-block"></i>No projects found</td></tr>');
+            return;
+        }
+        
+        data.forEach(project => {
             const row = `
                 <tr>
                     <td><strong>${project.id}</strong></td>
@@ -117,7 +147,7 @@
                     <td>${escapeHtml(project.description || '').substring(0, 50)}${(project.description || '').length > 50 ? '...' : ''}</td>
                     <td><i class="fas fa-calendar-alt"></i> ${formatDate(project.createdDate)}</td>
                     <td>${project.isActive ? '<i class="fas fa-check-circle text-success"></i> Yes' : '<i class="fas fa-times-circle text-danger"></i> No'}</td>
-                    <td><span class="badge bg-info">${project.todos ? project.todos.length : 0} todos</span></td>
+                    <td><span class="badge badge-info">${project.todos ? project.todos.length : 0} todos</span></td>
                     <td>
                         <button class="btn btn-sm btn-info" onclick="openEditModal(${project.id})">
                             <i class="fas fa-edit"></i> Edit

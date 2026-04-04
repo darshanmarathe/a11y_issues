@@ -7,12 +7,12 @@
 <div class="content-header mt-2">
     <div class="container-fluid">
         <div class="row mb-2">
-            <div class="col-sm-6">
+            <div class="col-sm-8">
                 <h1 class="m-0"><i class="fas fa-columns"></i> Kanban Board</h1>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <button class="btn btn-primary float-right" onclick="openAddModal()">
-                    <i class="fas fa-plus"></i> Add Todo
+                    <i class="fas fa-plus-circle"></i> Add Todo
                 </button>
             </div>
         </div>
@@ -21,25 +21,58 @@
 
 <div class="content">
     <div class="container-fluid">
+        <!-- Stat Cards -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="stat-card bg-gradient-purple">
+                    <div class="stat-label">Total Todos</div>
+                    <div class="stat-value" id="stat-total">0</div>
+                    <i class="fas fa-tasks stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="stat-card bg-gradient-blue">
+                    <div class="stat-label">In Progress</div>
+                    <div class="stat-value" id="stat-wip">0</div>
+                    <i class="fas fa-spinner stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="stat-card bg-gradient-green">
+                    <div class="stat-label">Completed</div>
+                    <div class="stat-value" id="stat-done">0</div>
+                    <i class="fas fa-check-circle stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="stat-card bg-gradient-orange">
+                    <div class="stat-label">Overdue</div>
+                    <div class="stat-value" id="stat-overdue">0</div>
+                    <i class="fas fa-exclamation-triangle stat-icon"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Kanban Board -->
         <div class="kanban-board" id="kanbanBoard">
             <div class="kanban-column" data-status="Backlog">
-                <div class="kanban-column-header backlog"><i class="fas fa-inbox"></i> Backlog</div>
+                <div class="kanban-column-header backlog"><i class="fas fa-inbox"></i> Backlog <span class="badge badge-light ml-2" id="count-backlog">0</span></div>
                 <div class="kanban-cards" id="cards-backlog"></div>
             </div>
             <div class="kanban-column" data-status="Linedup">
-                <div class="kanban-column-header linedup"><i class="fas fa-clone"></i> Lined Up</div>
+                <div class="kanban-column-header linedup"><i class="fas fa-clone"></i> Lined Up <span class="badge badge-light ml-2" id="count-linedup">0</span></div>
                 <div class="kanban-cards" id="cards-linedup"></div>
             </div>
             <div class="kanban-column" data-status="Wip">
-                <div class="kanban-column-header wip"><i class="fas fa-spinner"></i> In Progress</div>
+                <div class="kanban-column-header wip"><i class="fas fa-spinner"></i> In Progress <span class="badge badge-light ml-2" id="count-wip">0</span></div>
                 <div class="kanban-cards" id="cards-wip"></div>
             </div>
             <div class="kanban-column" data-status="Done">
-                <div class="kanban-column-header done"><i class="fas fa-check-circle"></i> Done</div>
+                <div class="kanban-column-header done"><i class="fas fa-check-circle"></i> Done <span class="badge badge-light ml-2" id="count-done">0</span></div>
                 <div class="kanban-cards" id="cards-done"></div>
             </div>
             <div class="kanban-column" data-status="Stuck">
-                <div class="kanban-column-header stuck"><i class="fas fa-exclamation-triangle"></i> Stuck</div>
+                <div class="kanban-column-header stuck"><i class="fas fa-exclamation-triangle"></i> Stuck <span class="badge badge-light ml-2" id="count-stuck">0</span></div>
                 <div class="kanban-cards" id="cards-stuck"></div>
             </div>
         </div>
@@ -52,7 +85,9 @@
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h4 class="modal-title" id="modalTitle"><i class="fas fa-plus-circle"></i> Add Todo</h4>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form id="todoForm">
@@ -126,7 +161,7 @@
                 <button type="button" class="btn btn-danger" id="deleteBtn" style="display:none;" onclick="deleteTodo()">
                     <i class="fas fa-trash"></i> Delete
                 </button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     <i class="fas fa-times"></i> Close
                 </button>
                 <button type="button" class="btn btn-primary" onclick="saveTodo()">
@@ -144,7 +179,6 @@
     let todoModal;
 
     $(document).ready(function() {
-        // Initialize Bootstrap 5 modal
         todoModal = new bootstrap.Modal(document.getElementById('todoModal'));
         
         loadProjects();
@@ -171,8 +205,48 @@
     function loadTodos() {
         $.get('/api/todos', function(data) {
             todos = data;
+            updateStats();
             renderKanbanBoard();
         });
+    }
+
+    function updateStats() {
+        const counts = {
+            backlog: 0,
+            linedup: 0,
+            wip: 0,
+            done: 0,
+            stuck: 0
+        };
+        
+        const now = new Date();
+        let overdueCount = 0;
+        
+        todos.forEach(todo => {
+            const status = todo.status.toLowerCase();
+            if (counts.hasOwnProperty(status)) {
+                counts[status]++;
+            }
+            
+            // Count overdue
+            if (todo.targetCompletionDate && !todo.isCompleted) {
+                const targetDate = new Date(todo.targetCompletionDate);
+                if (targetDate < now) {
+                    overdueCount++;
+                }
+            }
+        });
+        
+        $('#count-backlog').text(counts.backlog);
+        $('#count-linedup').text(counts.linedup);
+        $('#count-wip').text(counts.wip);
+        $('#count-done').text(counts.done);
+        $('#count-stuck').text(counts.stuck);
+        
+        $('#stat-total').text(todos.length);
+        $('#stat-wip').text(counts.wip + counts.linedup);
+        $('#stat-done').text(counts.done);
+        $('#stat-overdue').text(overdueCount);
     }
 
     function renderKanbanBoard() {
@@ -192,8 +266,8 @@
     }
 
     function createTodoCard(todo) {
-        const projectInfo = todo.project ? `<span class="project-info"><i class="fas fa-folder"></i> ${escapeHtml(todo.project.name)}</span>` : '';
-        const userInfo = todo.user ? `<span><i class="fas fa-user"></i> ${escapeHtml(todo.user)}</span>` : '';
+        const projectInfo = todo.project ? `<span class="text-muted"><i class="fas fa-folder"></i> ${escapeHtml(todo.project.name)}</span>` : '';
+        const userInfo = todo.user ? `<span class="text-muted"><i class="fas fa-user"></i> ${escapeHtml(todo.user)}</span>` : '';
         const linkInfo = todo.link ? `<a href="${escapeHtml(todo.link)}" target="_blank" class="ml-2 text-muted"><i class="fas fa-external-link-alt"></i></a>` : '';
         
         return `
@@ -241,6 +315,7 @@
 
     function saveTodo() {
         const todoId = $('#todoId').val();
+        const selectedProject = $('#projectSelect').jqxComboBox('val');
         const todoData = {
             title: $('#title').val(),
             description: $('#description').val(),
@@ -249,7 +324,7 @@
             targetCompletionDate: $('#targetCompletionDate').val() || null,
             user: $('#userInput').val(),
             link: $('#linkInput').val(),
-            projectId: $('#projectSelect').jqxComboBox('val')
+            projectId: selectedProject ? parseInt(selectedProject) : null
         };
         
         if (!todoData.title) {

@@ -7,70 +7,233 @@
     
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- AdminLTE -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0-beta2/dist/css/adminlte.min.css">
+    <!-- AdminLTE 3 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <!-- jqxwidgets -->
     <link rel="stylesheet" href="https://jqwidgets.com/public/jqwidgets/styles/jqx.base.css" />
     <link rel="stylesheet" href="https://jqwidgets.com/public/jqwidgets/styles/jqx.light.css" />
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Bootstrap 4 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     
     <style>
+        /* Custom Sidebar Styling */
+        .main-sidebar {
+            background: linear-gradient(180deg, #1a237e 0%, #0d47a1 50%, #01579b 100%);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+        }
+        
+        .brand-link {
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.1);
+            padding: 0.8125rem 1rem;
+        }
+        
+        .brand-text {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .nav-sidebar .nav-link {
+            color: rgba(255,255,255,0.85);
+            border-radius: 6px;
+            margin: 4px 8px;
+            padding: 10px 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-sidebar .nav-link:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            transform: translateX(4px);
+        }
+        
+        .nav-sidebar .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+        }
+        
+        .nav-sidebar .nav-link .nav-icon {
+            font-size: 1.1rem;
+            margin-right: 10px;
+        }
+        
+        .nav-header {
+            color: rgba(255,255,255,0.6);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.75rem;
+            padding: 12px 16px 6px;
+            margin-top: 10px;
+        }
+        
+        .nav-header:first-child {
+            margin-top: 0;
+        }
+        
+        /* Sidebar User Panel */
+        .user-panel {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 10px;
+        }
+        
+        .user-panel .info {
+            color: #fff;
+        }
+        
+        .user-panel .info p {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+        
+        .user-panel .info a {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.8rem;
+        }
+        
+        /* Navbar Styling */
+        .main-header {
+            background: linear-gradient(90deg, #fff 0%, #f8f9fa 100%);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .content-header h1 {
+            font-weight: 600;
+            color: #343a40;
+        }
+        
+        /* Content Cards */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        /* Stat Cards */
+        .stat-card {
+            border-radius: 10px;
+            padding: 20px;
+            color: #fff;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        
+        .stat-card .stat-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3rem;
+            opacity: 0.3;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .stat-card .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .bg-gradient-purple {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .bg-gradient-blue {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+        }
+        
+        .bg-gradient-green {
+            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+        }
+        
+        .bg-gradient-orange {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+        }
+        
+        /* Kanban Styling */
         .kanban-board {
             display: flex;
             gap: 15px;
             padding: 20px;
             overflow-x: auto;
-            background: #f4f6f9;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 500px;
+            border-radius: 10px;
         }
         
         .kanban-column {
             min-width: 300px;
-            background: #e9ecef;
-            border-radius: 8px;
+            background: #f8f9fa;
+            border-radius: 10px;
             padding: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         
         .kanban-column-header {
             font-weight: bold;
-            padding: 10px;
-            border-radius: 4px;
+            padding: 12px;
+            border-radius: 8px;
             margin-bottom: 10px;
             text-align: center;
+            color: #fff;
         }
         
-        .kanban-column-header.backlog { background: #6c757d; color: white; }
-        .kanban-column-header.linedup { background: #17a2b8; color: white; }
-        .kanban-column-header.wip { background: #ffc107; color: black; }
-        .kanban-column-header.done { background: #28a745; color: white; }
-        .kanban-column-header.stuck { background: #dc3545; color: white; }
+        .kanban-column-header.backlog { background: linear-gradient(135deg, #6c757d, #495057); }
+        .kanban-column-header.linedup { background: linear-gradient(135deg, #17a2b8, #138496); }
+        .kanban-column-header.wip { background: linear-gradient(135deg, #ffc107, #e0a800); color: #333; }
+        .kanban-column-header.done { background: linear-gradient(135deg, #28a745, #218838); }
+        .kanban-column-header.stuck { background: linear-gradient(135deg, #dc3545, #c82333); }
         
         .kanban-card {
             background: white;
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 15px;
             margin-bottom: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
+            border-left: 4px solid #007bff;
         }
         
         .kanban-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
         
         .kanban-card-title {
             font-weight: 600;
             margin-bottom: 8px;
             color: #333;
+            font-size: 0.95rem;
         }
         
         .kanban-card-description {
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             color: #666;
             margin-bottom: 10px;
         }
@@ -83,25 +246,17 @@
         }
         
         .priority-badge {
-            padding: 2px 8px;
+            padding: 3px 10px;
             border-radius: 12px;
             font-size: 0.7rem;
             font-weight: bold;
+            color: #fff;
         }
         
-        .priority-urgent { background: #dc3545; color: white; }
-        .priority-high { background: #fd7e14; color: white; }
-        .priority-medium { background: #ffc107; color: black; }
-        .priority-low { background: #28a745; color: white; }
-        
-        .project-select {
-            min-width: 200px;
-        }
-        
-        #todoModal .modal-body {
-            max-height: 70vh;
-            overflow-y: auto;
-        }
+        .priority-urgent { background: linear-gradient(135deg, #dc3545, #c82333); }
+        .priority-high { background: linear-gradient(135deg, #fd7e14, #e8590c); }
+        .priority-medium { background: linear-gradient(135deg, #ffc107, #e0a800); color: #333; }
+        .priority-low { background: linear-gradient(135deg, #28a745, #218838); }
         
         .status-badge {
             padding: 4px 12px;
@@ -109,51 +264,96 @@
             font-size: 0.75rem;
             font-weight: bold;
             display: inline-block;
-        }
-        
-        .status-backlog { background: #6c757d; color: white; }
-        .status-linedup { background: #17a2b8; color: white; }
-        .status-wip { background: #ffc107; color: black; }
-        .status-done { background: #28a745; color: white; }
-        .status-stuck { background: #dc3545; color: white; }
-        
-        .sidebar-brand {
-            padding: 0.8125rem 1rem;
-            font-size: 1.25rem;
-            display: block;
-            color: #fff;
-            text-decoration: none;
-        }
-        
-        .nav-link {
-            color: #C2C7D0;
-        }
-        
-        .nav-link:hover {
             color: #fff;
         }
         
-        .nav-link.active {
-            background-color: #007bff;
+        .status-backlog { background: linear-gradient(135deg, #6c757d, #495057); }
+        .status-linedup { background: linear-gradient(135deg, #17a2b8, #138496); }
+        .status-wip { background: linear-gradient(135deg, #ffc107, #e0a800); color: #333; }
+        .status-done { background: linear-gradient(135deg, #28a745, #218838); }
+        .status-stuck { background: linear-gradient(135deg, #dc3545, #c82333); }
+        
+        /* Footer */
+        .main-footer {
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            padding: 10px 0;
+        }
+        
+        /* Form Controls */
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        /* Table Styling */
+        .table thead th {
+            border-bottom: 2px solid #dee2e6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.005);
+        }
+        
+        /* Search Box */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-box .form-control {
+            padding-left: 40px;
+            border-radius: 25px;
+        }
+        
+        .search-box .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
         }
     </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
         <!-- Navbar -->
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light border-bottom">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="/" class="nav-link">Home</a>
+                    <a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a>
                 </li>
             </ul>
+            
+            <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <span class="navbar-text text-muted" id="currentDateTime"></span>
+                    <a class="nav-link" href="#" data-widget="fullscreen" role="button">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-widget="control-sidebar" data-slide="true" role="button">
+                        <i class="fas fa-th-large"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <span class="navbar-text text-muted ml-3" id="currentDateTime"></span>
                 </li>
             </ul>
         </nav>
@@ -162,34 +362,74 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="/" class="brand-link bg-primary">
-                <i class="fas fa-check-circle ml-3"></i>
-                <span class="brand-text font-weight-light ml-2">Todo App</span>
+            <a href="/" class="brand-link">
+                <i class="fas fa-check-circle text-primary ml-2"></i>
+                <span class="brand-text font-weight-light">Todo App</span>
             </a>
 
             <!-- Sidebar -->
             <div class="sidebar">
+                <!-- Sidebar user panel -->
+                <div class="user-panel mt-2 pb-3 mb-3 d-flex align-items-center">
+                    <div class="image">
+                        <i class="fas fa-user-circle fa-2x text-light"></i>
+                    </div>
+                    <div class="info">
+                        <p class="mb-1"><i class="fas fa-user"></i> User</p>
+                        <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                    </div>
+                </div>
+
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <li class="nav-header">MAIN</li>
+                        <li class="nav-header"><i class="fas fa-tachometer-alt"></i> DASHBOARD</li>
                         <li class="nav-item">
                             <a href="/" class="nav-link">
-                                <i class="nav-icon fas fa-th-large"></i>
+                                <i class="nav-icon fas fa-columns"></i>
                                 <p>Kanban Board</p>
                             </a>
                         </li>
+                        
+                        <li class="nav-header"><i class="fas fa-tasks"></i> TASKS</li>
                         <li class="nav-item">
                             <a href="/Todos" class="nav-link">
-                                <i class="nav-icon fas fa-list"></i>
+                                <i class="nav-icon fas fa-list-alt"></i>
                                 <p>All Todos</p>
                             </a>
                         </li>
-                        <li class="nav-header">MANAGEMENT</li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-star"></i>
+                                <p>My Tasks</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-clock"></i>
+                                <p>Overdue</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-header"><i class="fas fa-folder-open"></i> ORGANIZATION</li>
                         <li class="nav-item">
                             <a href="/Projects" class="nav-link">
                                 <i class="nav-icon fas fa-folder"></i>
                                 <p>Projects</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-header"><i class="fas fa-chart-bar"></i> REPORTS</li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-chart-pie"></i>
+                                <p>Analytics</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-file-alt"></i>
+                                <p>Summary</p>
                             </a>
                         </li>
                     </ul>
@@ -211,16 +451,16 @@
             <div class="float-right d-none d-sm-inline">
                 <b>Version</b> 1.0.0
             </div>
-            <strong>Todo App</strong> - Built with ASP.NET Core & AdminLTE
+            <strong><i class="fas fa-check-circle text-primary"></i> Todo App</strong> - Built with ASP.NET Core & AdminLTE
         </footer>
     </div>
 
     <!-- jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE -->
-    <script src="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0-beta2/dist/js/adminlte.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE 3 -->
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
     <!-- jqxwidgets -->
     <script src="https://jqwidgets.com/public/jqwidgets/jqxcore.js"></script>
     <script src="https://jqwidgets.com/public/jqwidgets/jqxdata.js"></script>
@@ -238,6 +478,20 @@
         }
         updateDateTime();
         setInterval(updateDateTime, 1000);
+        
+        // Set active menu item based on current page
+        $(document).ready(function() {
+            const path = window.location.pathname;
+            $('.nav-sidebar .nav-link').removeClass('active');
+            
+            if (path === '/' || path === '/Index') {
+                $('.nav-sidebar a[href="/"]').addClass('active');
+            } else if (path === '/Todos') {
+                $('.nav-sidebar a[href="/Todos"]').addClass('active');
+            } else if (path === '/Projects') {
+                $('.nav-sidebar a[href="/Projects"]').addClass('active');
+            }
+        });
     </script>
     
     @await RenderSectionAsync("Scripts", false)

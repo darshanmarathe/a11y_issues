@@ -7,12 +7,12 @@
 <div class="content-header mt-2">
     <div class="container-fluid">
         <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0"><i class="fas fa-list"></i> All Todos</h1>
+            <div class="col-sm-8">
+                <h1 class="m-0"><i class="fas fa-list-alt"></i> All Todos</h1>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <button class="btn btn-primary float-right" onclick="openAddModal()">
-                    <i class="fas fa-plus"></i> Add Todo
+                    <i class="fas fa-plus-circle"></i> Add Todo
                 </button>
             </div>
         </div>
@@ -21,13 +21,25 @@
 
 <div class="content">
     <div class="container-fluid">
+        <!-- Search -->
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="form-control form-control-lg" id="searchInput" placeholder="Search todos by title, description, or user..." />
+        </div>
+        
+        <!-- Table -->
         <div class="card card-primary card-outline">
             <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-clipboard-list"></i> Todo List</h3>
+                <div class="card-tools">
+                    <button class="btn btn-sm btn-primary" onclick="openAddModal()">
+                        <i class="fas fa-plus"></i> New
+                    </button>
+                </div>
             </div>
-            <div class="card-body">
+            <div class="card-body p-0">
                 <table class="table table-bordered table-striped table-hover" id="todosTable">
-                    <thead class="bg-primary text-white">
+                    <thead>
                         <tr>
                             <th>ID</th>
                             <th>Title</th>
@@ -54,7 +66,9 @@
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h4 class="modal-title" id="modalTitle"><i class="fas fa-plus-circle"></i> Add Todo</h4>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <form id="todoForm">
@@ -128,7 +142,7 @@
                 <button type="button" class="btn btn-danger" id="deleteBtn" style="display:none;" onclick="deleteTodo()">
                     <i class="fas fa-trash"></i> Delete
                 </button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     <i class="fas fa-times"></i> Close
                 </button>
                 <button type="button" class="btn btn-primary" onclick="saveTodo()">
@@ -159,6 +173,17 @@
             valueMember: 'id',
             placeHolder: '-- Select Project --'
         });
+        
+        // Search functionality
+        $('#searchInput').on('keyup', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            const filtered = todos.filter(todo => 
+                todo.title.toLowerCase().includes(searchTerm) ||
+                (todo.description && todo.description.toLowerCase().includes(searchTerm)) ||
+                (todo.user && todo.user.toLowerCase().includes(searchTerm))
+            );
+            renderTable(filtered);
+        });
     });
 
     function loadProjects() {
@@ -175,11 +200,17 @@
         });
     }
 
-    function renderTable() {
+    function renderTable(data) {
+        data = data || todos;
         const tbody = $('#todosTable tbody');
         tbody.empty();
         
-        todos.forEach(todo => {
+        if (data.length === 0) {
+            tbody.append('<tr><td colspan="10" class="text-center text-muted py-4"><i class="fas fa-inbox fa-2x mb-2 d-block"></i>No todos found</td></tr>');
+            return;
+        }
+        
+        data.forEach(todo => {
             const row = `
                 <tr>
                     <td><strong>${todo.id}</strong></td>
@@ -230,6 +261,7 @@
 
     function saveTodo() {
         const todoId = $('#todoId').val();
+        const selectedProject = $('#projectSelect').jqxComboBox('val');
         const todoData = {
             title: $('#title').val(),
             description: $('#description').val(),
@@ -238,7 +270,7 @@
             targetCompletionDate: $('#targetCompletionDate').val() || null,
             user: $('#userInput').val(),
             link: $('#linkInput').val(),
-            projectId: $('#projectSelect').jqxComboBox('val')
+            projectId: selectedProject ? parseInt(selectedProject) : null
         };
         
         if (!todoData.title) {

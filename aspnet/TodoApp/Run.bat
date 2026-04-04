@@ -1,1 +1,1 @@
- dotnet run --urls=http://localhost:5000 
+dotnet watch run --urls=http://0.0.0.0:5000

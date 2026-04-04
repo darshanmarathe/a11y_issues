@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
 using TodoApp.Data;
 using TodoApp.Models;
 
@@ -10,10 +12,12 @@ namespace TodoApp.Controllers;
 public class TodosController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly ILogger<TodosController> _logger;
 
-    public TodosController(ApplicationDbContext context)
+    public TodosController(ApplicationDbContext context, ILogger<TodosController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     // GET: api/Todos
@@ -64,44 +68,82 @@ public class TodosController : ControllerBase
 
     // PUT: api/Todos/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTodo(int id, Todo todo)
+    public async Task<IActionResult> PutTodo(int id)
     {
-        if (id != todo.Id)
-        {
-            return BadRequest();
-        }
-
-        todo.ModifiedDate = DateTime.Now;
-        _context.Entry(todo).State = EntityState.Modified;
-
         try
         {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!TodoExists(id))
+            using var reader = new StreamReader(Request.Body);
+            var json = await reader.ReadToEndAsync();
+            _logger.LogInformation("PUT REQUEST: id={Id}, body={Body}", id, json);
+            
+            var dto = JsonSerializer.Deserialize<TodoDto>(json, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            
+            if (dto == null)
+            {
+                return BadRequest("Invalid JSON");
+            }
+            
+            _logger.LogInformation("DTO parsed: {Dto}", dto.ToString());
+            
+            var todo = await _context.Todos.FindAsync(id);
+            if (todo == null)
             {
                 return NotFound();
             }
-            else
-            {
-                throw;
-            }
-        }
 
-        return Ok(todo);
+            MapDtoToEntity(dto, todo);
+            todo.ModifiedDate = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+            
+            _logger.LogInformation("Todo {Id} updated successfully", id);
+            return Ok(todo);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating todo {Id}", id);
+            return BadRequest(ex.Message);
+        }
     }
 
     // POST: api/Todos
     [HttpPost]
-    public async Task<ActionResult<Todo>> PostTodo(Todo todo)
+    public async Task<ActionResult<Todo>> PostTodo()
     {
-        todo.CreatedDate = DateTime.Now;
-        _context.Todos.Add(todo);
-        await _context.SaveChangesAsync();
+        try
+        {
+            using var reader = new StreamReader(Request.Body);
+            var json = await reader.ReadToEndAsync();
+            _logger.LogInformation("POST REQUEST: body={Body}", json);
+            
+            var dto = JsonSerializer.Deserialize<TodoDto>(json, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            
+            if (dto == null || string.IsNullOrEmpty(dto.Title))
+            {
+                return BadRequest("Title is required");
+            }
+            
+            _logger.LogInformation("DTO parsed: {Dto}", dto.ToString());
+            
+            var todo = MapDtoToEntity(dto);
+            todo.CreatedDate = DateTime.Now;
+            _context.Todos.Add(todo);
+            await _context.SaveChangesAsync();
 
-        return CreatedAtAction("GetTodo", new { id = todo.Id }, todo);
+            _logger.LogInformation("Todo created with ID: {Id}", todo.Id);
+            return CreatedAtAction("GetTodo", new { id = todo.Id }, todo);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating todo");
+            return BadRequest(ex.Message);
+        }
     }
 
     // DELETE: api/Todos/5
@@ -132,7 +174,7 @@ public class TodosController : ControllerBase
 
         todo.Status = statusDto.Status;
         todo.ModifiedDate = DateTime.Now;
-        
+
         if (statusDto.Status == "Done")
         {
             todo.IsCompleted = true;
@@ -142,6 +184,41 @@ public class TodosController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(todo);
+    }
+
+    private Todo MapDtoToEntity(TodoDto dto, Todo? existingTodo = null)
+    {
+        var todo = existingTodo ?? new Todo();
+
+        todo.Title = dto.Title ?? todo.Title ?? string.Empty;
+        todo.Description = dto.Description;
+        todo.Status = dto.Status ?? todo.Status ?? "Backlog";
+        todo.Priority = dto.Priority ?? todo.Priority ?? "Medium";
+        todo.User = dto.User;
+        todo.Link = dto.Link;
+        todo.IsCompleted = dto.Status == "Done" || todo.IsCompleted;
+
+        // Handle target completion date
+        if (!string.IsNullOrEmpty(dto.TargetCompletionDate))
+        {
+            todo.TargetCompletionDate = DateTime.Parse(dto.TargetCompletionDate);
+        }
+        else
+        {
+            todo.TargetCompletionDate = null;
+        }
+
+        // Handle projectId - use GetProjectIdAsInt() to handle int/string/null
+        var parsedProjectId = dto.GetProjectIdAsInt();
+        todo.ProjectId = parsedProjectId;
+
+        // Set completion date if status is Done
+        if (todo.Status == "Done" && !todo.CompletionDate.HasValue)
+        {
+            todo.CompletionDate = DateTime.Now;
+        }
+
+        return todo;
     }
 
     private bool TodoExists(int id)
