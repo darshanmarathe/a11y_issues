@@ -1,0 +1,138 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "avatar": "https://i.pravatar.cc/150?u=1"
+    },
+    {
+      "id": "2",
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "avatar": "https://i.pravatar.cc/150?u=2"
+    },
+    {
+      "id": "3",
+      "name": "Bob Wilson",
+      "email": "bob@example.com",
+      "avatar": "https://i.pravatar.cc/150?u=3"
+    }
+  ],
+  "projects": [
+    {
+      "id": "1",
+      "name": "Website Redesign",
+      "description": "Redesign the company website with modern UI/UX",
+      "color": "#3B82F6",
+      "created_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "name": "Mobile App",
+      "description": "Develop a cross-platform mobile application",
+      "color": "#10B981",
+      "created_at": "2024-02-01T09:00:00Z"
+    },
+    {
+      "id": "3",
+      "name": "API Integration",
+      "description": "Integrate third-party APIs for payment and analytics",
+      "color": "#F59E0B",
+      "created_at": "2024-02-10T14:00:00Z"
+    }
+  ],
+  "todos": [
+    {
+      "id": "1",
+      "title": "Design Homepage Mockup",
+      "description": "Create initial mockup for the new homepage design",
+      "completion_date": null,
+      "status": "Wip",
+      "target_completion_date": "2024-04-10",
+      "isCompleted": false,
+      "link": "https://figma.com/file/abc123",
+      "project_id": 1,
+      "priority": "High",
+      "user_id": 1,
+      "created_at": "2024-04-01T08:00:00Z",
+      "updated_at": "2024-04-01T08:00:00Z"
+    },
+    {
+      "id": "2",
+      "title": "Setup React Project",
+      "description": "Initialize the React project with Vite and TypeScript",
+      "completion_date": "2024-04-02",
+      "status": "Linedup",
+      "target_completion_date": "2024-04-02",
+      "isCompleted": false,
+      "link": null,
+      "project_id": 1,
+      "priority": "Urgent",
+      "user_id": 2,
+      "created_at": "2024-04-01T09:00:00Z",
+      "updated_at": "2024-04-02T17:00:00Z"
+    },
+    {
+      "id": "3",
+      "title": "Implement Authentication",
+      "description": "Add JWT-based authentication system",
+      "completion_date": null,
+      "status": "Backlog",
+      "target_completion_date": "2024-04-20",
+      "isCompleted": false,
+      "link": null,
+      "project_id": 2,
+      "priority": "High",
+      "user_id": 1,
+      "created_at": "2024-04-01T10:00:00Z",
+      "updated_at": "2024-04-01T10:00:00Z"
+    },
+    {
+      "id": "4",
+      "title": "Create API Endpoints",
+      "description": "Build REST API endpoints for user management",
+      "completion_date": null,
+      "status": "Wip",
+      "target_completion_date": "2024-04-15",
+      "isCompleted": false,
+      "link": "https://postman.com/collection/xyz789",
+      "project_id": 3,
+      "priority": "Medium",
+      "user_id": 3,
+      "created_at": "2024-04-01T11:00:00Z",
+      "updated_at": "2024-04-01T11:00:00Z"
+    },
+    {
+      "id": "5",
+      "title": "Fix Navigation Bug",
+      "description": "Navigation menu not closing on mobile devices",
+      "completion_date": null,
+      "status": "Stuck",
+      "target_completion_date": "2024-04-05",
+      "isCompleted": false,
+      "link": "https://github.com/issues/456",
+      "project_id": 1,
+      "priority": "Urgent",
+      "user_id": 2,
+      "created_at": "2024-04-02T08:00:00Z",
+      "updated_at": "2024-04-03T14:00:00Z"
+    },
+    {
+      "id": "6",
+      "title": "Write Unit Tests",
+      "description": "Add unit tests for authentication module",
+      "completion_date": null,
+      "status": "Backlog",
+      "target_completion_date": "2024-04-25",
+      "isCompleted": false,
+      "link": null,
+      "project_id": 2,
+      "priority": "Low",
+      "user_id": 1,
+      "created_at": "2024-04-02T09:00:00Z",
+      "updated_at": "2024-04-02T09:00:00Z"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

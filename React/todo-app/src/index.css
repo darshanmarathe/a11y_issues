@@ -1,0 +1,435 @@
+:root {
+  font-family: 'Inter Variable', Inter, system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #213547;
+  background-color: #f5f7fa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+#root {
+  height: 100vh;
+}
+
+/* App Layout */
+.app-layout {
+  height: 100vh;
+  width: 100vw;
+}
+
+.main-content {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecef 100%);
+  min-height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  position: relative;
+  height: 100vh;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 4px 0 20px rgba(102, 126, 234, 0.3);
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 100;
+}
+
+.sidebar-expanded {
+  width: 260px;
+}
+
+.sidebar-collapsed {
+  width: 70px;
+}
+
+.sidebar-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 60px;
+}
+
+.logo-icon {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-toggle {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: none !important;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  transition: all 0.2s;
+}
+
+.sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+}
+
+.nav-item {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: white;
+  transform: scaleY(0);
+  transition: transform 0.3s;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  transform: translateX(4px);
+}
+
+.nav-item-active {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.nav-item-active::before {
+  transform: scaleY(1);
+}
+
+.nav-icon-collapsed {
+  margin: 0 auto;
+}
+
+.sidebar-footer {
+  padding-bottom: 1rem;
+}
+
+/* Dashboard Styles */
+.dashboard-page {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.stat-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.stat-icon {
+  backdrop-filter: blur(4px);
+}
+
+/* Kanban Styles */
+.kanban-page,
+.kanban-column {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.kanban-column {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+}
+
+.kanban-column:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Card Styles */
+.p-card {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  transition: all 0.3s;
+}
+
+.p-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+.p-card .p-card-title {
+  color: #1a1a1a;
+}
+
+.p-card .p-card-body {
+  padding: 1.5rem;
+}
+
+/* DataTable Styles */
+.p-datatable {
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+}
+
+.p-datatable .p-datatable-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white;
+  border: none !important;
+}
+
+.p-datatable .p-datatable-header th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  font-weight: 600;
+  border: none !important;
+}
+
+.p-datatable .p-datatable-tbody td {
+  border-bottom: 1px solid #e9ecef !important;
+}
+
+.p-datatable .p-datatable-tbody tr:hover {
+  background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%) !important;
+}
+
+/* Button Styles */
+.p-button {
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s !important;
+}
+
+.p-button-success {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+  border: none !important;
+}
+
+.p-button-success:hover {
+  background: linear-gradient(135deg, #0d7a6e 0%, #2dd46a 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(17, 153, 142, 0.4);
+}
+
+/* Dialog Styles */
+.p-dialog {
+  border-radius: 16px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2) !important;
+}
+
+.p-dialog .p-dialog-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 16px 16px 0 0;
+  padding: 1.25rem;
+}
+
+.p-dialog .p-dialog-header .p-dialog-title {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+/* Tag Styles */
+.p-tag {
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  padding: 0.35rem 0.75rem !important;
+}
+
+/* Badge Styles */
+.p-badge {
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+}
+
+/* Input Styles */
+.p-inputtext,
+.p-dropdown,
+.p-calendar,
+.p-inputtextarea {
+  border-radius: 8px !important;
+  border: 2px solid #e9ecef !important;
+  transition: all 0.3s !important;
+}
+
+.p-inputtext:focus,
+.p-dropdown:focus,
+.p-calendar:focus,
+.p-inputtextarea:focus {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2) !important;
+}
+
+/* ProgressBar Styles */
+.p-progressbar {
+  border-radius: 8px !important;
+  height: 10px !important;
+}
+
+.p-progressbar .p-progressbar-value {
+  border-radius: 8px !important;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+/* TabMenu Styles */
+.p-tabmenu {
+  border: none !important;
+  background: transparent !important;
+}
+
+.p-tabmenu .p-tabmenu-nav {
+  border: none !important;
+  background: transparent !important;
+}
+
+.p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
+  border: none !important;
+  border-radius: 10px !important;
+  margin: 0 0.25rem;
+  transition: all 0.3s;
+}
+
+.p-tabmenu .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Utility Classes */
+.card {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-white-alpha-70 {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.bg-white-alpha-20 {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #5a6fd6 0%, #6a4192 100%);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-page > *,
+.kanban-page > *,
+.card {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Edit Button Styles */
+.edit-btn {
+  background: rgba(102, 126, 234, 0.1) !important;
+  border: none !important;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50% !important;
+  color: #667eea !important;
+  transition: all 0.3s !important;
+}
+
+.edit-btn:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Group relative for hover effects */
+.group {
+  position: relative;
+}
+
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.transition-opacity {
+  transition: opacity 0.3s ease;
+}
+
+.top-2 {
+  top: 0.5rem;
+}
+
+.right-2 {
+  right: 0.5rem;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.p-button-sm {
+  font-size: 0.75rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar-expanded {
+    width: 70px;
+  }
+  
+  .sidebar-footer {
+    display: none;
+  }
+}
