@@ -1,0 +1,105 @@
+{
+  "todos": [
+    {
+      "id": "1",
+      "title": "Setup project structure",
+      "description": "Initialize Vue 3 project with all required dependencies",
+      "completionDate": "2026-04-04T17:52:50.288Z",
+      "status": "Linedup",
+      "target_completion_date": "2026-04-05",
+      "isCompleted": true,
+      "link": "",
+      "projectId": 1,
+      "priority": "High",
+      "user": "John Doe"
+    },
+    {
+      "id": "2",
+      "title": "Create sidebar navigation",
+      "description": "Implement a nice sidebar for navigation",
+      "completionDate": "2026-04-04T17:55:09.450Z",
+      "status": "Done",
+      "target_completion_date": "2026-04-06",
+      "isCompleted": true,
+      "link": "",
+      "projectId": 1,
+      "priority": "Medium",
+      "user": "Jane Smith"
+    },
+    {
+      "id": "3",
+      "title": "Implement Kanban board",
+      "description": "Create kanban board with drag and drop functionality",
+      "completionDate": null,
+      "status": "Backlog",
+      "target_completion_date": "2026-04-10",
+      "isCompleted": false,
+      "link": "",
+      "projectId": 1,
+      "priority": "High",
+      "user": "John Doe"
+    },
+    {
+      "id": "4",
+      "title": "Add project management",
+      "description": "Create projects master management interface",
+      "completionDate": "2026-04-04T17:55:16.195Z",
+      "status": "Done",
+      "target_completion_date": "2026-04-12",
+      "isCompleted": true,
+      "link": "",
+      "projectId": 2,
+      "priority": "Medium",
+      "user": "Alice Johnson"
+    },
+    {
+      "id": "5",
+      "title": "Fix login bug",
+      "description": "Users unable to login with special characters in password",
+      "completionDate": null,
+      "status": "Stuck",
+      "target_completion_date": "2026-04-07",
+      "isCompleted": false,
+      "link": "https://github.com/example/issue/123",
+      "projectId": 3,
+      "priority": "Urgent",
+      "user": "Bob Wilson"
+    },
+    {
+      "title": "Do Something fancy",
+      "description": "Do Something fancy",
+      "status": "Backlog",
+      "priority": "Medium",
+      "projectId": null,
+      "user": "",
+      "target_completion_date": null,
+      "link": "",
+      "isCompleted": false,
+      "id": "i1wfCbpfES4"
+    }
+  ],
+  "projects": [
+    {
+      "id": "1",
+      "name": "Vue Todo App",
+      "description": "Main project for creating a todo application with Kanban board",
+      "status": "Active",
+      "createdDate": "2026-04-01"
+    },
+    {
+      "id": "2",
+      "name": "Project Management Tool",
+      "description": "Enhanced project management features",
+      "status": "Active",
+      "createdDate": "2026-04-02"
+    },
+    {
+      "id": "3",
+      "name": "Bug Fixes",
+      "description": "Collection of critical bug fixes",
+      "status": "Active",
+      "createdDate": "2026-04-03"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

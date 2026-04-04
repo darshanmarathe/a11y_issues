@@ -1,0 +1,36 @@
+{
+  "name": "vue-todo-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "server": "json-server --watch db.json --port 3000",
+    "start": "concurrently \"npm run dev\" \"npm run server\"",
+    "start:app": "concurrently \"npm run dev\" \"npm run server\""
+  },
+  "dependencies": {
+    "@syncfusion/ej2-base": "^33.1.45",
+    "@syncfusion/ej2-vue-base": "^33.1.44",
+    "@syncfusion/ej2-vue-buttons": "^33.1.44",
+    "@syncfusion/ej2-vue-dropdowns": "^33.1.46",
+    "@syncfusion/ej2-vue-grids": "^33.1.46",
+    "@syncfusion/ej2-vue-inputs": "^33.1.44",
+    "@syncfusion/ej2-vue-kanban": "^33.1.44",
+    "@syncfusion/ej2-vue-layouts": "^33.1.44",
+    "@syncfusion/ej2-vue-navigations": "^33.1.46",
+    "@syncfusion/ej2-vue-popups": "^33.1.44",
+    "axios": "^1.14.0",
+    "concurrently": "^9.2.1",
+    "json-server": "^1.0.0-beta.15",
+    "vue": "^3.5.30",
+    "vue-router": "^4.6.4",
+    "vuex": "^4.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.5",
+    "vite": "^8.0.1"
+  }
+}
