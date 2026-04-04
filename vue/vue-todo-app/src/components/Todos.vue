@@ -79,7 +79,6 @@
                 type="checkbox" 
                 :checked="todo.isCompleted"
                 @change="toggleComplete(todo)"
-                class="complete-checkbox"
               />
             </td>
             <td class="actions-cell">

@@ -2,7 +2,7 @@
   <aside class="sidebar" :class="{ 'sidebar-open': isOpen, 'sidebar-closed': !isOpen }">
     <div class="sidebar-header">
       <h2 class="sidebar-title" v-show="isOpen">Todo App</h2>
-      <button class="toggle-btn" @click="$emit('toggle')" :aria-label="isOpen ? 'Close sidebar' : 'Open sidebar'">
+      <button class="toggle-btn" @click="$emit('toggle')">
         <span v-if="isOpen">◀</span>
         <span v-else>▶</span>
       </button>

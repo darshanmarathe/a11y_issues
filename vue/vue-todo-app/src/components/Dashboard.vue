@@ -8,9 +8,9 @@
     </div>
     
     <div class="stats">
-      <div class="stat-card">
-        <div class="stat-number">{{ totalTodos }}</div>
-        <div class="stat-label">Total Todos</div>
+      <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div style="font-size: 48px; font-weight: bold;">{{ totalTodos }}</div>
+        <div style="font-size: 14px; opacity: 0.9;">Total Todos</div>
       </div>
       <div class="stat-card completed">
         <div class="stat-number">{{ completedTodos }}</div>
@@ -54,6 +54,7 @@
               @dragstart="dragStart($event, todo)"
               @dragend="dragEnd($event)"
               @click="editTodo(todo)"
+              tabindex="0"
             >
               <div class="drag-handle" title="Drag to move">⋮⋮</div>
               <div class="todo-header">
@@ -80,6 +81,8 @@
                   Target: {{ formatDate(todo.target_completion_date) }}
                 </span>
               </div>
+              
+              <div class="color-indicator" :style="{ backgroundColor: getPriorityColor(todo.priority) }"></div>
             </div>
             
             <div v-if="getTodosByStatus(status).length === 0" class="empty-column">
@@ -104,6 +107,7 @@
               type="text" 
               required 
               placeholder="Enter todo title"
+              autofocus
             />
           </div>
           
@@ -119,8 +123,8 @@
           
           <div class="form-row">
             <div class="form-group">
-              <label for="status">Status</label>
-              <select id="status" v-model="formData.status">
+              <label>Status</label>
+              <select v-model="formData.status">
                 <option value="Backlog">Backlog</option>
                 <option value="Linedup">Lined Up</option>
                 <option value="Wip">In Progress</option>
@@ -130,8 +134,8 @@
             </div>
             
             <div class="form-group">
-              <label for="priority">Priority</label>
-              <select id="priority" v-model="formData.priority">
+              <label>Priority</label>
+              <select v-model="formData.priority">
                 <option value="Urgent">Urgent</option>
                 <option value="High">High</option>
                 <option value="Medium">Medium</option>
@@ -142,8 +146,8 @@
           
           <div class="form-row">
             <div class="form-group">
-              <label for="project">Project</label>
-              <select id="project" v-model="formData.projectId">
+              <label>Project</label>
+              <select v-model="formData.projectId">
                 <option :value="null">No Project</option>
                 <option 
                   v-for="project in projects" 
@@ -156,9 +160,8 @@
             </div>
             
             <div class="form-group">
-              <label for="user">User</label>
+              <label>User</label>
               <input 
-                id="user"
                 v-model="formData.user" 
                 type="text" 
                 placeholder="Assignee"
@@ -168,18 +171,16 @@
           
           <div class="form-row">
             <div class="form-group">
-              <label for="targetDate">Target Completion</label>
+              <label>Target Completion</label>
               <input 
-                id="targetDate"
                 v-model="formData.target_completion_date" 
                 type="date"
               />
             </div>
             
             <div class="form-group">
-              <label for="link">Link</label>
+              <label>Link</label>
               <input 
-                id="link"
                 v-model="formData.link" 
                 type="url" 
                 placeholder="https://..."
@@ -198,7 +199,7 @@
           </div>
           
           <div class="dialog-actions">
-            <button type="button" class="btn-cancel" @click="closeDialogs">
+            <button class="btn-cancel" @click="closeDialogs">
               Cancel
             </button>
             <button type="submit" class="btn-submit">
@@ -325,6 +326,16 @@ export default {
     getProjectName(projectId) {
       const project = this.getProjectById(projectId);
       return project ? project.name : '';
+    },
+    
+    getPriorityColor(priority) {
+      const colors = {
+        'Urgent': '#e74c3c',
+        'High': '#f39c12',
+        'Medium': '#3498db',
+        'Low': '#95a5a6'
+      };
+      return colors[priority] || '#95a5a6';
     },
     
     formatDate(dateStr) {
@@ -591,6 +602,15 @@ export default {
 
 .drag-handle:hover {
   color: #667eea;
+}
+
+.color-indicator {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
 }
 
 .todo-header {
